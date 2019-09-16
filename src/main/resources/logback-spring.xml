@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true" scanPeriod="60 seconds">
+
+
+    <!-- log 文件路径，读取配置文件-->
+    <springProperty scope="context" name="NAME" source="spring.application.name"/>
+    <springProperty scope="context" name="LOG_PATH" source="log.path"/>
+
+
+    <!--<contextName>${NAME}</contextName>-->
+
+
+    <!--控制台打印-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} -%msg%n</pattern>
+
+        </encoder>
+        <target>System.out</target>
+
+    </appender>
+
+
+    <!--按照每天生成日志文件-->
+    <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${NAME}.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} -%msg%n</pattern>
+        </encoder>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名，每天保存（侧翻）一次-->
+            <FileNamePattern>${LOG_PATH}/${NAME}_%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <!--文件保留天数-->
+            <MaxHistory>30</MaxHistory>
+            <!--日志文件切割大小，超出限定大小会生成新的文件，原先文件也保留-->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+
+    <!-- 测试环境+开发环境. 多个使用逗号隔开. -->
+    <springProfile name="test,dev">
+        <logger name="com.chargeingpile.netty.chargeingpilenetty" level="info"/>
+    </springProfile>
+    <!-- 生产环境. -->
+    <springProfile name="prod">
+        <logger name="com.chargeingpile.netty.chargeingpilenetty" level="info"/>
+    </springProfile>
+
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="ROLLING_FILE"/>
+    </root>
+
+</configuration>
