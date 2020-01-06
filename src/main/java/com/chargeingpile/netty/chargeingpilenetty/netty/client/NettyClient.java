@@ -50,7 +50,7 @@ public class NettyClient implements Runnable{
                         });
 
             //ChannelFuture future = b.connect(HOST, PORT).sync();
-            ChannelFuture future = b.connect("192.168.32.25", 9999).sync();
+            ChannelFuture future = b.connect("192.168.32.35", 9999).sync();
 
             //future.channel().writeAndFlush(content + "--" + new Date().getTime()+"-----------这是我发送的数据");
 

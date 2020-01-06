@@ -1,5 +1,7 @@
 package com.chargeingpile.netty.chargeingpilenetty.netty.server;
 
+import com.chargeingpile.netty.chargeingpilenetty.shenghong.handle.ShHeartBeatHandler;
+import com.chargeingpile.netty.chargeingpilenetty.shenghong.handle.ShServerHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
@@ -17,10 +19,17 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
     protected void initChannel(SocketChannel channel) throws Exception {
 
 
-        channel.pipeline().addLast("decoder",new StringDecoder(CharsetUtil.UTF_8));
-        channel.pipeline().addLast("encoder",new StringEncoder(CharsetUtil.UTF_8));
+        //channel.pipeline().addLast("decoder",new StringDecoder(CharsetUtil.UTF_8));
+        //channel.pipeline().addLast("encoder",new StringEncoder(CharsetUtil.UTF_8));
+        channel.pipeline().addLast("decoder",new ByteArrayDecoder());
+        channel.pipeline().addLast("encoder",new ByteArrayEncoder());
 
+
+       //channel.pipeline().addLast(new ShHeartBeatHandler());//心跳
+        //channel.pipeline().addLast(new ShServerHandler());//逻辑
         channel.pipeline().addLast(new NettyServerHandler());
+        //channel.pipeline().addLast(new SystemServerHandler());
+
 
     }
 }
