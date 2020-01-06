@@ -34,6 +34,8 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
         channel.pipeline().addLast(new IdleStateHandler(60,0,0));
         channel.pipeline().addLast(new NettyServerHandler());
         channel.pipeline().addLast(new NettySystemHandler());
+        channel.pipeline().addLast(new NettyChargeHandler());
+
 
 
     }
