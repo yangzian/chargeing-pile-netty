@@ -1,4 +1,4 @@
-package com.chargeingpile.netty.chargeingpilenetty.netty.util;
+package com.chargeingpile.netty.chargeingpilenetty.util;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;

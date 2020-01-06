@@ -1,4 +1,4 @@
-package com.chargepile.util;
+package com.chargeingpile.netty.chargeingpilenetty.util;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

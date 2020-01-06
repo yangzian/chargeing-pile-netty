@@ -1,4 +1,4 @@
-package com.chargepile.util;
+package com.chargeingpile.netty.chargeingpilenetty.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

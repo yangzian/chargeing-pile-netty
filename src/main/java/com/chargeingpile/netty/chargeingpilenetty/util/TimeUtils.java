@@ -1,10 +1,12 @@
-package com.chargeingpile.netty.chargeingpilenetty.shenghong.utils;
-
-
-import com.chargeingpile.netty.chargeingpilenetty.util.DateUtil;
+package com.chargeingpile.netty.chargeingpilenetty.util;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.BytesUtil;
+
+import javafx.scene.chart.PieChart.Data;
 
 public class TimeUtils {
 
@@ -14,7 +16,7 @@ public class TimeUtils {
 	
 	/**
 	 * 获取当前时间的BCD格式
-	 * @param hex
+	 * @param
 	 * @return
 	 */
 	public static byte[] getCurBCDTime() {

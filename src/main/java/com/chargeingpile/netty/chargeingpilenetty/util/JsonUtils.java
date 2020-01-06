@@ -1,4 +1,4 @@
-package com.chargepile.util;
+package com.chargeingpile.netty.chargeingpilenetty.util;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -32,8 +32,8 @@ public class JsonUtils {
 	 * @param jsonStr
 	 * @param clazz
 	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
+	 * @throws
+	 * @throws
 	 * @throws IOException
 	 */
 	public <T> T jsonFromBean(String jsonStr,Class<T> clazz) {

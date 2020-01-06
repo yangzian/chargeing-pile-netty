@@ -1,4 +1,4 @@
-package com.chargepile.util;
+package com.chargeingpile.netty.chargeingpilenetty.util;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;

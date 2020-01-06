@@ -132,7 +132,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             //响应客户端
             //this.channelWrite(ctx.channel().id(),signResp);
 
-        }
+        } else
 
         if (cmd.equalsIgnoreCase("6600")){ //充电桩上传心跳包 cmd=102
 
@@ -144,128 +144,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             //响应客户端
             //this.channelWrite(ctx.channel().id(),hbSlave);
 
-        }
+        }else {
 
-        if (cmd.equalsIgnoreCase("0200")) { //充电桩应答整形参数设置/查询报文 cmd=2
-            if (msg1[50] == 0) {
-
-            } else {
-                System.out.println("参数查询/设置--失败");
-            }
-
-        if (cmd.equalsIgnoreCase("6800")) { //充电桩上传状态信息包 cmd=104
-
-            PileStateInfo info = PileStateInfo.getStateInfo(msg1);
-
-            //System.out.println("handleChargeState --> " + info.toString());
-
-            int pileState = info.getWorkState();
-
-            String gun = BytesUtil.byteToHexString(info.getGun());
-            String cardStr = BytesUtil.bytesToHexString(info.getCardID());
-            StateResponse sr = new StateResponse(gun, cardStr);
-
-            byte[] srMsgByte =sr.getMsgByte(1);
-
-            ctx.writeAndFlush(sr.getMsgByte(1));
-
-            System.out.println("应答 103");
-
-            //响应客户端
-            this.channelWrite(ctx.channel().id(), srMsgByte);
-
-
-
-
-            // 实时充电数据放入缓存
-            StateInfo stateInfo = StateInfo.getIns(msg1);
-
-            System.out.println("实时充电数据========"+stateInfo.toString());
-
-            String pipleCode = stateInfo.getZhuangId();
-
-            System.out.println("桩id"+pileCode);
-
-            Map<String, Object> retMap = new HashMap<String, Object>();
-            retMap.put("elec", stateInfo.getElecQua());
-            retMap.put("time", stateInfo.getCharTim());
-            retMap.put("DC_v", stateInfo.getDireV());
-            retMap.put("DC_i", stateInfo.getDireI());
-            retMap.put("av", stateInfo.getaV());
-            retMap.put("ai", stateInfo.getaI());
-            retMap.put("bv", stateInfo.getbV());
-            retMap.put("bi", stateInfo.getbI());
-            retMap.put("cv", stateInfo.getcV());
-            retMap.put("ci", stateInfo.getcI());
-            //剩余充电时间  秒
-            retMap.put("rem_tim", stateInfo.getRemTim());
-            retMap.put("soc", stateInfo.getSoc());
-
-            System.out.println("retMap========"+retMap);
-
-            // 告警状态
-            Map<String, Object> alarmMap = new HashMap<String, Object>();
-            alarmMap.put("alarm", stateInfo.getAlarm());
-            System.out.println("alaMap=========="+alarmMap);
+            ctx.fireChannelRead(msg);
         }
 
 
-
-        if (cmd.equalsIgnoreCase("CA00")) { //充电桩上传充电信息 cmd=202
-
-
-
-            ChargeRecordInfo info = ChargeRecordInfo.getInfo(msg1);
-            pileCode = info.getPileCode();
-
-            //log.info( "pipleCode = "+ pipleCode +" 上报充电记录");
-            //log.info( info.toString());
-            System.out.println("pipleCode = " + pileCode + " 上报充电记录");
-            System.out.println(info.toString());
-
-            //chargeDao.insertChargeRecord(info, pipleCode);
-
-            //响应
-            String gun = BytesUtil.int2HexString(info.getGun());
-            String card = BytesUtil.bytesToHexString(info.getCarId());
-            CharInfoResponse res = new CharInfoResponse(gun, card);
-
-            ctx.writeAndFlush(res.getMsgByte(2));
-
-            System.out.println("上传 cmd=201");
-
-            //TODO 是否需要
-//                        Insert.insertCharInfo(msg);
-
-            String id = "";
-//            if (client != null) {
-//                id = client.getPile_code();
-//                // 停止充电时用到，充电信息
-//                client.setChargeRecordInfo(info);
-//            }
-
-        }
-
-            /*if (cmd.equalsIgnoreCase("6C00")) {
-
-
-                //预留，先不处理
-                AlarmInfo info = AlarmInfo.getIns(msg1);
-                pileCode = info.getPile_code();
-                System.out.println("充电桩 上报  告警信息  : pipleCode=" + pileCode);
-
-                // TODO
-                if (!CommonUtil.isEmpty(pileCode)) {
-
-                    // Insert.insertAlarm(msg);
-
-                    //AlarmInfo_dao.updateChpStaAlarm(pipleCode);
-                }
-
-            }
-*/
-
-        }
 
 
             //响应客户端
@@ -304,7 +188,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     }
 
 
-
+private String pileCode = "";
 
 
 
@@ -330,7 +214,17 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 System.out.println("Client: " + socketString + " ALL_IDLE 总超时");
                 ctx.disconnect();
             }
+
+            if (CommonUtil.isEmpty(pileCode)){
+                ctx.fireUserEventTriggered(evt);
+
+            }
+            //超时
+            System.out.println("超时了");
+        }else {
+            super.userEventTriggered(ctx,evt);
         }
+
     }
 
 

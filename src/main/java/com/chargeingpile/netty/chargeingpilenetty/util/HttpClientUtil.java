@@ -1,4 +1,4 @@
-package com.chargepile.util;
+package com.chargeingpile.netty.chargeingpilenetty.util;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

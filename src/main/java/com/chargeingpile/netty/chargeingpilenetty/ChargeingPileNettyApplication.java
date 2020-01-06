@@ -13,7 +13,8 @@ import java.net.InetSocketAddress;
 
 @SpringBootApplication
 @MapperScan("com.ennit.dashboard.gating.mapper")
-public class ChargeingPileNettyApplication implements CommandLineRunner {
+public class ChargeingPileNettyApplication//implements CommandLineRunner
+ {
 
 
     @Autowired
@@ -25,18 +26,16 @@ public class ChargeingPileNettyApplication implements CommandLineRunner {
     }
 
 
-
+/*
     public void run(String...strings) throws Exception{
 
         InetSocketAddress address = new InetSocketAddress(DefaultConstans.SOKET_IP,DefaultConstans.SOKET_PORT);
         nettyServer.start(address);
 
 
-
-
-
-
-
     }
+
+    */
+
 
 }
