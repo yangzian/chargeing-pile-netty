@@ -121,6 +121,11 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         if (cmd.equalsIgnoreCase("6a00")){ //充电桩签到 cmd=106
            // System.out.println("充电桩签到 cmd=106");
 
+            ClientManager.addClientConnection(ctx,pileCode);
+
+
+            ClientManager.addClientConnection(ctx,pileCode);
+
             SignResponse sr = new SignResponse();
             byte[] signResp = sr.getMsgByte(1);
 
@@ -137,6 +142,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         if (cmd.equalsIgnoreCase("6600")){ //充电桩上传心跳包 cmd=102
 
             //System.out.println("充电桩上传心跳包 cmd=102");
+
+            ClientManager.addClientConnection(ctx,pileCode);
+
             HbResponse hs = new HbResponse(1, 2);
             byte[] hbSlave = hs.getMsgByte(1);
             ctx.writeAndFlush(hbSlave);
@@ -196,27 +204,33 @@ private String pileCode = "";
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
 
         String socketString = ctx.channel().remoteAddress().toString();
-
+String type ="";
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
             if (event.state() == IdleState.READER_IDLE) {
 
                 System.out.println("Client: " + socketString + " READER_IDLE 读超时");
-                ctx.disconnect();
+                type = "读超时";
+               // ctx.disconnect();
 
             } else if (event.state() == IdleState.WRITER_IDLE) {
 
                 System.out.println("Client: " + socketString + " WRITER_IDLE 写超时");
-                ctx.disconnect();
+                type = "写超时";
+
+               // ctx.disconnect();
 
             } else if (event.state() == IdleState.ALL_IDLE) {
+                type = "总超时";
 
                 System.out.println("Client: " + socketString + " ALL_IDLE 总超时");
-                ctx.disconnect();
+
+               // ctx.disconnect();
             }
 
             if (CommonUtil.isEmpty(pileCode)){
                 ctx.fireUserEventTriggered(evt);
+                return;
 
             }
             //超时

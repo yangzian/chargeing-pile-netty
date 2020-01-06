@@ -1,6 +1,7 @@
 package com.chargeingpile.netty.chargeingpilenetty.netty.server;
 
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.ShConfig;
+import com.chargeingpile.netty.chargeingpilenetty.shenghong.handle.HandleName;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.handle.ShHeartBeatHandler;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.handle.ShServerHandler;
 import io.netty.channel.ChannelInitializer;
@@ -34,7 +35,7 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
         channel.pipeline().addLast(new IdleStateHandler(60,0,0));
         channel.pipeline().addLast(new NettyServerHandler());
         channel.pipeline().addLast(new NettySystemHandler());
-        channel.pipeline().addLast(new NettyChargeHandler());
+        channel.pipeline().addLast(HandleName.HANDLE_CHARGE,new NettyChargeHandler());
 
 
 

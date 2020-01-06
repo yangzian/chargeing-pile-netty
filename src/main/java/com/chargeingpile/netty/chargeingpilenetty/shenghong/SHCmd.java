@@ -79,6 +79,8 @@ public class SHCmd {
 			@Override
 			public void operationComplete(ChannelFuture future) throws Exception {
 				if (future.isSuccess()) {
+
+					System.out.println("停止充电-----中");
 				}
 				
 			}

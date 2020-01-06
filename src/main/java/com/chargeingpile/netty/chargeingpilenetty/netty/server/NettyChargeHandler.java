@@ -32,6 +32,10 @@ public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
     }
 
 
+    public NettyChargeHandler(){
+        super();
+    }
+
 
 
     @Override

@@ -144,11 +144,12 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                 //预留，先不处理
                 AlarmInfo info = AlarmInfo.getIns(msg);
                 pileCode = info.getPile_code();
-                System.out.println("充电桩 上报  告警信息  : pipleCode=" + pileCode);
 
                 // TODO
                 if (!CommonUtil.isEmpty(pileCode)) {
 
+                    System.out.println("充电桩 上报  告警信息  : code====" + info.getPile_code()+"alarmType===="+info.getAlarmType());
+                    System.out.println("alarms==========="+info.getAlarms());
                     // Insert.insertAlarm(msg);
 
                     //AlarmInfo_dao.updateChpStaAlarm(pipleCode);

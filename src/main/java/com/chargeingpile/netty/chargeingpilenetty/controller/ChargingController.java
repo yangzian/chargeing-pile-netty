@@ -20,13 +20,13 @@ import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import sun.security.krb5.Config;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * ***************************************************
@@ -77,17 +77,17 @@ public class ChargingController {
 
     @ApiOperation(value = "预约充电/即时充电-开启")
     @PostMapping(value = "/startOrder")
-    public ServerResponse startOrder() {
+    public ServerResponse startOrder(@RequestParam() String statim, @RequestParam() String endTime){
         try {
 
             // 充电桩ID
             final String chp_id = "";
             // 用户卡号/用户识别号
-            String use_id = "11010001668019601101000166801960";
+            String use_id = "0000120190317244";
             // 开始时间
-            String sta_tim = "";
+            String sta_tim = statim;
             // 结束时间
-            String end_tim = "";
+            String end_tim = endTime;
             // 时长=
             String tim_len = "";
             // 0-预约，1-开启充电
@@ -138,12 +138,27 @@ public class ChargingController {
                             if (flag.equals("0")) { // 预约
 
                                 charType = StartCharger.ORDER;
-                                Calendar calendar = Calendar.getInstance();
+
+                               /* Calendar calendar = Calendar.getInstance();
                                 calendar.setTimeInMillis(Long.valueOf(end_tim));
 
                                 end_tim = CommonUtil.getBCDTimeStr(calendar);
 
                                 charger.setTime(end_tim); // 预约或定时启动时间（8字节）
+*/
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                                Calendar calendar = Calendar.getInstance();
+
+                                Date t = sdf.parse(end_tim);
+
+                                calendar.setTime(t);
+
+                                String c = CommonUtil.getBCDTimeStr(calendar);
+
+                                charger.setTime(c);
+
 
                             } else {// 即时充电
                                 charType = StartCharger.CHARGE;
@@ -220,13 +235,13 @@ public class ChargingController {
 
             // 充电桩ID
             String chp_ip = "169.254.151.100"; //充电桩ip
-            String usr_id = "11010001668019601101000166801960";
+            String usr_id = "0000120190317244";
 
             String chp_por = "9999"; // 充电桩端口号
             String cha_num = "075586511588001"; // 充电桩 编号
 
             // 0-取消预约，1-停止充电
-            String flag = "1";
+            String flag = "0";
 
 
             // buwei
@@ -249,11 +264,11 @@ public class ChargingController {
                 CacheManager cacheManager = CacheManager.getInstance();
 
                 Cache sample = cacheManager.getCache("loginCache");
-                sample.remove(cha_num + "staChp");
+               // sample.remove(cha_num + "staChp");
 
                 Element element = new Element(cha_num + "staChp", 2);
 
-                sample.put(element);
+               // sample.put(element);
 
                 Thread.sleep(2000);
                 if (TEST) {
