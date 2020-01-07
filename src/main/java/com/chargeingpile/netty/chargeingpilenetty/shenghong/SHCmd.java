@@ -37,9 +37,12 @@ public class SHCmd {
 		NettyChargeHandler handler = (NettyChargeHandler) ctx.channel().pipeline().get(HandleName.HANDLE_CHARGE) ;
 		handler.setFlag(flag);
 		
-		ChannelFuture future = ctx.writeAndFlush(data.getMsgByte(index));
+		//ChannelFuture future =
+				ctx.writeAndFlush(data.getMsgByte(index));
+
 		index += 2;
-		future.addListener(new ChannelFutureListener() {
+
+		/*future.addListener(new ChannelFutureListener() {
 			
 			@Override
 			public void operationComplete(ChannelFuture future) throws Exception {
@@ -49,7 +52,7 @@ public class SHCmd {
 				}
 				
 			}
-		});
+		});*/
 		
 		return true;
 	}
@@ -63,8 +66,7 @@ public class SHCmd {
 		if (ctx == null ) {
 			return false;
 		}
-		
-		ChannelFuture future = ctx.writeAndFlush(data.getMsgByte(2));
+
 		int flag = 0;
 		if (data.getAddr().equals(StopCharger.ADDR_ORDER)) {
 			flag = 0;
@@ -74,7 +76,11 @@ public class SHCmd {
 
 		NettyChargeHandler handler = (NettyChargeHandler)ctx.channel().pipeline().get(HandleName.HANDLE_CHARGE) ;
 		handler.setFlag(flag);
-		future.addListener(new ChannelFutureListener() {
+
+		//ChannelFuture future =
+				ctx.writeAndFlush(data.getMsgByte(2));
+
+		/*future.addListener(new ChannelFutureListener() {
 			
 			@Override
 			public void operationComplete(ChannelFuture future) throws Exception {
@@ -84,7 +90,7 @@ public class SHCmd {
 				}
 				
 			}
-		});
+		});*/
 		
 		return true;
 	}

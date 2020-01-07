@@ -14,7 +14,7 @@ public class StopCharger extends Message{
 	
 	public static final String ADDR_ORDER  = "0A000000";
 	public static final String ADDR_CHARGE = "02000000";
-	
+
 	private String yuliu1 = "0000";//(2字节)
 	private String yuliu2 = "0000";//(2字节)
 	/**

@@ -114,7 +114,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
             pileCode = info.getPileCode();
 
 
-            System.out.println("pipleCode = " + pileCode + " 上报充电记录");
+            System.out.println("pipleCode = " + pileCode + " 上报充电记录"+"桩状态--"+client.getPileState());
             System.out.println(info.toString());
 
 
@@ -131,11 +131,11 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
 //                        Insert.insertCharInfo(msg);
 
             String id = "";
-//            if (client != null) {
-//                id = client.getPile_code();
-//                // 停止充电时用到，充电信息
-//                client.setChargeRecordInfo(info);
-//            }
+            if (client != null) {
+                id = client.getPile_code();
+                // 停止充电时用到，充电信息
+                client.setChargeRecordInfo(info);
+            }
 
         }else if (cmd.equalsIgnoreCase("6C00")) {
 

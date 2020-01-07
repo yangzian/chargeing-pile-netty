@@ -39,6 +39,8 @@ public class EhcacheUtil {
 		url = getClass().getResource(path);
 		manager = CacheManager.create(url);
 	}
+	private EhcacheUtil() {
+	}
 
 	public static EhcacheUtil getInstance() {
 		if (ehCache == null) {

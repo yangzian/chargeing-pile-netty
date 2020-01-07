@@ -64,4 +64,13 @@ public class NettyServer {
         }
     }
 
+
+
+    public int stop(){
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
+        return 0;
+
+    }
+
 }

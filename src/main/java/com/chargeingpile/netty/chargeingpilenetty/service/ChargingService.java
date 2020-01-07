@@ -19,6 +19,7 @@ public interface ChargingService {
 
    ServerResponse startService() throws Exception;
 
+   ServerResponse stopService();
 
 
 

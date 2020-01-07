@@ -5,6 +5,8 @@ import com.chargeingpile.netty.chargeingpilenetty.constans.DefaultConstans;
 import com.chargeingpile.netty.chargeingpilenetty.mapper.ChargingMapper;
 import com.chargeingpile.netty.chargeingpilenetty.netty.server.NettyServer;
 import com.chargeingpile.netty.chargeingpilenetty.service.ChargingService;
+import com.chargeingpile.netty.chargeingpilenetty.shenghong.manager.ClientConnection;
+import com.chargeingpile.netty.chargeingpilenetty.shenghong.manager.ClientManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,6 +57,31 @@ public class ChargingServiceImpl implements ChargingService {
         }
 
         return ServerResponse.createBySuccess("启动成功",0);
+
+    }
+
+
+
+    public ServerResponse stopService(){
+
+        try {
+
+            ClientConnection conn = ClientManager.getClientConnection("169.254.151.100","075586511588001");
+
+            if (conn != null){
+
+                InetSocketAddress insocket = (InetSocketAddress) conn.getCtx().channel().remoteAddress();
+
+                nettyServer.stop();
+
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return ServerResponse.createBySuccess("服务停止");
 
     }
 

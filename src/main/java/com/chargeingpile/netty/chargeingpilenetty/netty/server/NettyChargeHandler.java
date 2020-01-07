@@ -77,6 +77,7 @@ public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
                         System.out.println("开启充电 -- 成功");
 
                         client.setPileState(ClientConnection.STATE_CHARGE);// 2
+                        //client.setPileState(ClientConnection.STATE_READY);// 1
 
 //						String id = client.getUserID();
 //						com.chargepile.service.collection.suowei.sql.Insert.insertChargeStart(id, pile,
@@ -97,8 +98,9 @@ public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
             if (msg[50] == 0) {
                 if (client != null) {
                     client.setPileState(ClientConnection.STATE_NORMAL); //0
+                    //client.setPileState(ClientConnection.STATE_CHARGE_OVER); //3
 
-                    System.out.println("取消预约/停止充电--成功");
+                    System.out.println("停止充电--成功");
                 }
             } else {
                 if (client != null) {
