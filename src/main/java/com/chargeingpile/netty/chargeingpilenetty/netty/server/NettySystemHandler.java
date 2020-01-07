@@ -48,6 +48,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
             //System.out.println("handleChargeState --> " + info.toString());
 
             int pileState = info.getWorkState();
+            System.out.println("桩状态----"+pileState);
 
             String gun = BytesUtil.byteToHexString(info.getGun());
             String cardStr = BytesUtil.bytesToHexString(info.getCardID());
@@ -75,9 +76,6 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
 
             }
 
-
-            //响应客户端
-            //this.channelWrite(ctx.channel().id(), srMsgByte);
 
             // 实时充电数据放入缓存
             StateInfo stateInfo = StateInfo.getIns(msg);

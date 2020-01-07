@@ -45,6 +45,7 @@ public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
 
         if (!SHUtils.isShengHong(msg)){
             ctx.fireChannelRead(msg);
+            return;
         }
         byte cmd = msg[6];
 

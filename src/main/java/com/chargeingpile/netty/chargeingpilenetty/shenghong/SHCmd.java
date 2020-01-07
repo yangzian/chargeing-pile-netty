@@ -72,7 +72,7 @@ public class SHCmd {
 			flag = 1;
 		}
 
-		NettyChargeHandler handler = (NettyChargeHandler) ctx.channel().pipeline().get(HandleName.HANDLE_CHARGE) ;
+		NettyChargeHandler handler = (NettyChargeHandler)ctx.channel().pipeline().get(HandleName.HANDLE_CHARGE) ;
 		handler.setFlag(flag);
 		future.addListener(new ChannelFutureListener() {
 			

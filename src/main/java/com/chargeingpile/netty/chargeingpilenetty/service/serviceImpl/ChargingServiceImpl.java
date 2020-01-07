@@ -39,9 +39,13 @@ public class ChargingServiceImpl implements ChargingService {
         try {
 
             InetSocketAddress address = new InetSocketAddress(DefaultConstans.SOKET_IP, DefaultConstans.SOKET_PORT);
-            nettyServer.start(address);
+           int i =  nettyServer.start(address);
 
-            return ServerResponse.createBySuccess("启动成功",1);
+           if (i != 0){
+               return ServerResponse.createByErrorMessage("服务器异常，请联系管理员。");
+           }
+
+
 
 
         } catch (Exception e) {
@@ -50,6 +54,7 @@ public class ChargingServiceImpl implements ChargingService {
             return ServerResponse.createByErrorMessage("服务器异常，请联系管理员。");
         }
 
+        return ServerResponse.createBySuccess("启动成功",0);
 
     }
 

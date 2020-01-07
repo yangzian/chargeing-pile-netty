@@ -124,7 +124,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             ClientManager.addClientConnection(ctx,pileCode);
 
 
-            ClientManager.addClientConnection(ctx,pileCode);
+            //ClientManager.addClientConnection(ctx,pileCode);
 
             SignResponse sr = new SignResponse();
             byte[] signResp = sr.getMsgByte(1);

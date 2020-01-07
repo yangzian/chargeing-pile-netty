@@ -132,14 +132,16 @@ public class ChargingController {
                             if (flag.equals("0")) { // 预约
 
                                 charType = StartCharger.ORDER;
+/*
 
-                               /* Calendar calendar = Calendar.getInstance();
+                               Calendar calendar = Calendar.getInstance();
                                 calendar.setTimeInMillis(Long.valueOf(end_tim));
 
                                 end_tim = CommonUtil.getBCDTimeStr(calendar);
 
                                 charger.setTime(end_tim); // 预约或定时启动时间（8字节）
 */
+
 
                                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -336,7 +338,7 @@ public class ChargingController {
 
                     }
                 }
-
+                return ServerResponse.createBySuccess("成功",retMap);
             }
 
             return ServerResponse.createBySuccess("成功",retMap);
