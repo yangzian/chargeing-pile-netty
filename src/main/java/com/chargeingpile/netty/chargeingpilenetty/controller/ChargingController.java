@@ -58,16 +58,10 @@ public class ChargingController {
     @ApiOperation(value = "开启服务")
     @PostMapping(value = "/startService")
     public ServerResponse startService() {
-        try {
+
 
             return chargingService.startService();
 
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            return ServerResponse.createByErrorMessage("服务器异常，请联系管理员。");
-        }
 
     }
 
@@ -77,7 +71,7 @@ public class ChargingController {
 
     @ApiOperation(value = "预约充电/即时充电-开启")
     @PostMapping(value = "/startOrder")
-    public ServerResponse startOrder(@RequestParam() String statim, @RequestParam() String endTime){
+    public ServerResponse startOrder(@RequestParam() String statim, @RequestParam() String endTime,@RequestParam() String flag){
         try {
 
             // 充电桩ID
@@ -91,7 +85,7 @@ public class ChargingController {
             // 时长=
             String tim_len = "";
             // 0-预约，1-开启充电
-            String flag = "0";
+            //String flag = "0";
 
 
             String chp_ip = "169.254.151.100"; //充电桩ip
@@ -228,7 +222,7 @@ public class ChargingController {
 
     @ApiOperation(value = "停止充电 或 取消预约 充电")
     @PostMapping(value = "/stopCharge")
-    public ServerResponse stopCharge() {
+    public ServerResponse stopCharge(@RequestParam() String flag) {
         try {
 
 
@@ -241,7 +235,7 @@ public class ChargingController {
             String cha_num = "075586511588001"; // 充电桩 编号
 
             // 0-取消预约，1-停止充电
-            String flag = "0";
+           // String flag = "0";
 
 
             // buwei

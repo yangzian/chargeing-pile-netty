@@ -34,12 +34,23 @@ public class ChargingServiceImpl implements ChargingService {
     private ChargingMapper chargingMapper;
 
 
-    public ServerResponse startService() {
+    public ServerResponse startService(){
 
-        InetSocketAddress address = new InetSocketAddress(DefaultConstans.SOKET_IP, DefaultConstans.SOKET_PORT);
-        nettyServer.start(address);
+        try {
 
-        return ServerResponse.createBySuccess("启动成功",1);
+            InetSocketAddress address = new InetSocketAddress(DefaultConstans.SOKET_IP, DefaultConstans.SOKET_PORT);
+            nettyServer.start(address);
+
+            return ServerResponse.createBySuccess("启动成功",1);
+
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return ServerResponse.createByErrorMessage("服务器异常，请联系管理员。");
+        }
+
+
     }
 
 

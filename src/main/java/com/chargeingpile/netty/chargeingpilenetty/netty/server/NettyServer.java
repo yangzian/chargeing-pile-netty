@@ -44,6 +44,8 @@ public class NettyServer {
 
             //关闭channel和块，直到它被关闭
             future.channel().closeFuture().sync();
+
+
         } catch (Exception e) {
             e.printStackTrace();
             bossGroup.shutdownGracefully();

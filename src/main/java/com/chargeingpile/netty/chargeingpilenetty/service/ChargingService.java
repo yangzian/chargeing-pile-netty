@@ -17,7 +17,7 @@ import java.util.List;
 public interface ChargingService {
 
 
-   ServerResponse startService();
+   ServerResponse startService() throws Exception;
 
 
 
