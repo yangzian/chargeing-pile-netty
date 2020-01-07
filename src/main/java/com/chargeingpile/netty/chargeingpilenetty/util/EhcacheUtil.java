@@ -9,10 +9,12 @@
 package com.chargeingpile.netty.chargeingpilenetty.util;
 
 import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.net.URL;
 
 /**
  * @Title: EhcacheUtil.java
@@ -25,40 +27,44 @@ import javax.annotation.Resource;
 @Component
 public class EhcacheUtil {
 	//private static final CacheManager cacheManager = new CacheManager();
-	
-	private Cache cache;
-	
-    @Resource(name="loginCache") 
-    public void setEhCache(Cache loginCache) {
-        this.cache = loginCache; 
-    }  
-    
-	/*
-	 * 通过名称从缓存中获取数据
-	 */
-	@SuppressWarnings("deprecation")
-	public Object getCacheElement(String cacheKey) throws Exception {
-		Element e = cache.get(cacheKey);
-		if (e == null) {
-			return null;
-		}
-		return e.getValue();
+	private static final String path = "/ehcache.xml";
+
+	private URL url;
+
+	private CacheManager manager;
+
+	private static EhcacheUtil ehCache;
+
+	private EhcacheUtil(String path) {
+		url = getClass().getResource(path);
+		manager = CacheManager.create(url);
 	}
 
-	/*
-	 * 将对象添加到缓存中
-	 */
-	public void addToCache(String cacheKey, Object result) throws Exception {
-		Element element = new Element(cacheKey, result);
+	public static EhcacheUtil getInstance() {
+		if (ehCache == null) {
+			ehCache = new EhcacheUtil(path);
+		}
+		return ehCache;
+	}
+
+	public void put(String key, Object value) {
+		Cache cache = manager.getCache("userCache");
+		Element element = new Element(key, value);
 		cache.put(element);
 	}
 
-	/*
-	 * 根据key删除缓存中的对象
-	 */
-	public boolean removeCacheByKey(String key) throws IllegalStateException {
-		
-		boolean res = cache.remove(key);
-		return res;
+	public Object get(String key) {
+		Cache cache = manager.getCache("userCache");
+		Element element = cache.get(key);
+		return element == null ? null : element.getObjectValue();
+	}
+
+	public Cache get() {
+		return manager.getCache("userCache");
+	}
+
+	public void remove(String key) {
+		Cache cache = manager.getCache("userCache");
+		cache.remove(key);
 	}
 }
