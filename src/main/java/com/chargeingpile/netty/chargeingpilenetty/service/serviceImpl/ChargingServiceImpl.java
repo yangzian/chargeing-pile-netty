@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ***************************************************
@@ -34,6 +36,27 @@ public class ChargingServiceImpl implements ChargingService {
 
     @Autowired
     private ChargingMapper chargingMapper;
+
+
+    /**
+     * 测试
+     * @return
+     */
+    public ServerResponse getUserInfo(){
+
+        List<Map<String,Object>> userList = chargingMapper.getUserInfo();
+
+        return ServerResponse.createBySuccess("查询成功",userList);
+    }
+
+
+
+
+
+
+
+
+
 
 
     public ServerResponse startService(){

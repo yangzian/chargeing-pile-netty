@@ -4,6 +4,11 @@
 
 
 
+    <select id="getUserInfo" resultType="java.util.HashMap">
+
+        SELECT * FROM use_use
+
+    </select>
 
 
 

@@ -4,6 +4,7 @@ import com.chargeingpile.netty.chargeingpilenetty.config.ServerResponse;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ***************************************************
@@ -15,6 +16,14 @@ import java.util.List;
  */
 
 public interface ChargingService {
+
+
+   /**
+    * 测试
+    * @return
+    */
+   ServerResponse getUserInfo();
+
 
 
    ServerResponse startService() throws Exception;

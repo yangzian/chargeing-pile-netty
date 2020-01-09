@@ -41,7 +41,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/chargingController")
-@Api(tags = "测试")
+@Api(tags = "充电桩")
 public class ChargingController {
 
 

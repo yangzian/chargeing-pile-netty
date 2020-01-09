@@ -22,5 +22,8 @@ import java.util.Map;
 public interface ChargingMapper {
 
 
+    List<Map<String,Object>> getUserInfo();
+
+
 
 }
