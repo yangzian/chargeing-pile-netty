@@ -116,9 +116,10 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
        // final ClientConnection client = ClientManager.getClientConnection(ctx, pileCode);
 
 
-        System.out.println("cmd======="+cmd+"-------------pilecode===="+pileCode);
+        //System.out.println("cmd======="+cmd+"-------------pilecode===="+pileCode);
 
         if (cmd.equalsIgnoreCase("6a00")){ //充电桩签到 cmd=106
+
            // System.out.println("充电桩签到 cmd=106");
 
             ClientManager.addClientConnection(ctx,pileCode);
@@ -130,7 +131,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             ctx.writeAndFlush(signResp);
 
 
-            System.out.println("签到-----105");
+            //System.out.println("签到-----105");
             //响应客户端
             //this.channelWrite(ctx.channel().id(),signResp);
 
@@ -145,9 +146,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             HbResponse hs = new HbResponse(1, 2);
             byte[] hbSlave = hs.getMsgByte(1);
             ctx.writeAndFlush(hbSlave);
-            System.out.println("心跳 cmd=101");
+            //System.out.println("心跳 cmd=101");
             //响应客户端
-            //this.channelWrite(ctx.channel().id(),hbSlave);
+            this.channelWrite(ctx.channel().id(),hbSlave);
 
         }else {
 
@@ -231,7 +232,7 @@ String type ="";
 
             }
             //超时
-            System.out.println("超时了");
+            System.out.println(pileCode+"连接超时了");
         }else {
             super.userEventTriggered(ctx,evt);
         }
@@ -252,7 +253,7 @@ String type ="";
 
         ctx.close();
 
-        System.out.println(ctx.channel().id() + " 发生了错误,此连接被关闭" + "此时连通数量: " + CHANNEL_MAP.size());
+        System.out.println(ctx.channel().id() + " guanbi,此连接被关闭" + "此时连通数量: " + CHANNEL_MAP.size());
 
 
 

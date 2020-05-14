@@ -51,7 +51,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 
         //cause.printStackTrace();
-        System.out.println("服务端发生异常【" + cause.getMessage() + "】");
+        System.out.println("fu wu duan fa sheng yi chang 【" + cause.getMessage() + "】");
         ctx.close();
     }
 
@@ -66,7 +66,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         ChannelHandlerContext ctx = CLIENT_MAP.get(channelId);
 
         if (ctx == null) {
-            System.out.println("通道【" + channelId + "】不存在");
+            System.out.println("tong dao 【" + channelId + "】bu cun zai ");
             return;
         }
 

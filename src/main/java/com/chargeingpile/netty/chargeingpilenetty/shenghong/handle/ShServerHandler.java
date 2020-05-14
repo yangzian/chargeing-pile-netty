@@ -152,6 +152,8 @@ public class ShServerHandler extends SimpleChannelInboundHandler<byte[]> {
                  //   log.info("handleChargeState --> " + info.toString());
                     System.out.println("handleChargeState --> " + info.toString());
 
+                    //chargeDao.insertChargeRecord(info, pipleCode);
+
                     int pileState = info.getWorkState();
 
                     String gun = BytesUtil.byteToHexString(info.getGun());

@@ -37,22 +37,22 @@ public class SHCmd {
 		NettyChargeHandler handler = (NettyChargeHandler) ctx.channel().pipeline().get(HandleName.HANDLE_CHARGE) ;
 		handler.setFlag(flag);
 		
-		//ChannelFuture future =
+		ChannelFuture future =
 				ctx.writeAndFlush(data.getMsgByte(index));
 
 		index += 2;
 
-		/*future.addListener(new ChannelFutureListener() {
-			
+		future.addListener(new ChannelFutureListener() {
+
 			@Override
 			public void operationComplete(ChannelFuture future) throws Exception {
 				if (future.isSuccess()) {
 				    //log.info("盛宏桩 发送开启充电命令成功 --->");
 					System.out.println("盛宏桩 发送开启充电命令成功 --->");
 				}
-				
+
 			}
-		});*/
+		});
 		
 		return true;
 	}

@@ -32,9 +32,9 @@ public class StartCharger extends Message{
 		setYuliu2("0000");
 		setYuliu3("00000000");
 		setGun("00");
-		setCharType("00000000");//默认即时充电		
-		setCharStra("00000000");//默认充满为止
-		setCharStraPara("00000000");
+		setCharType("00000000"); //充电类型（4字节） 0及时充电 1定时启动充电 2预约充电
+		setCharStra("00000000");  //充电策略（4字节）//默认即时充电 0充满为止 1时间控制充电 2金额控制充电 3电量控制充电
+		setCharStraPara("00000000");  //充电策略参数（4字节） //默认充满为止 时间单位为1秒 金额单位为0.01元 电量单位为0.01Kw
 		setTime("0000000000000000");
 		setTimeOut("01");
 //		setCard(ASCIIUtil.ASCII2HexString("11010001668019601101000166801960"));

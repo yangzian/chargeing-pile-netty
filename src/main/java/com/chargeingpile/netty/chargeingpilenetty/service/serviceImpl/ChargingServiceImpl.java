@@ -4,7 +4,9 @@ import com.chargeingpile.netty.chargeingpilenetty.config.ServerResponse;
 import com.chargeingpile.netty.chargeingpilenetty.constans.DefaultConstans;
 import com.chargeingpile.netty.chargeingpilenetty.mapper.ChargingMapper;
 import com.chargeingpile.netty.chargeingpilenetty.netty.server.NettyServer;
+import com.chargeingpile.netty.chargeingpilenetty.pojo.BasChaPilPojo;
 import com.chargeingpile.netty.chargeingpilenetty.service.ChargingService;
+import com.chargeingpile.netty.chargeingpilenetty.shenghong.SHServer;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.manager.ClientConnection;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.manager.ClientManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,56 +63,86 @@ public class ChargingServiceImpl implements ChargingService {
 
     public ServerResponse startService(){
 
-        try {
 
-            InetSocketAddress address = new InetSocketAddress(DefaultConstans.SOKET_IP, DefaultConstans.SOKET_PORT);
-           int i =  nettyServer.start(address);
+
+            // 根据服务ip 和 端口号 开启服务
+            //
+          InetSocketAddress address = new InetSocketAddress(DefaultConstans.SOKET_IP, DefaultConstans.SOKET_PORT);
+
+        System.out.println("address1-------------"+address);
+
+            int i =  nettyServer.start(address);
 
            if (i != 0){
-               return ServerResponse.createByErrorMessage("服务器异常，请联系管理员。");
+               return ServerResponse.createByErrorMessage("shibai。");
            }
 
 
 
 
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            return ServerResponse.createByErrorMessage("服务器异常，请联系管理员。");
-        }
+ /*
+        SHServer shServer = new SHServer(9999);
+           shServer.start();;
+           */
 
         return ServerResponse.createBySuccess("启动成功",0);
+
 
     }
 
 
 
-    public ServerResponse stopService(){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 根据充电桩ip 和 充电桩编号 停止服务  0成功 1失败
+    public Integer stopService(String chaIp,String chaNum){
 
         try {
 
-            ClientConnection conn = ClientManager.getClientConnection("169.254.151.100","075586511588001");
+            ClientConnection conn = ClientManager.getClientConnection(chaIp,chaNum);
 
             if (conn != null){
 
                 InetSocketAddress insocket = (InetSocketAddress) conn.getCtx().channel().remoteAddress();
 
                 nettyServer.stop();
+                return 0;
 
             }
 
         } catch (Exception e) {
 
             e.printStackTrace();
+            //return 0;
         }
 
-        return ServerResponse.createBySuccess("服务停止");
+        return 1;
 
     }
 
 
 
 
+
+    public List<BasChaPilPojo> selChaIp(String chaId,String chaNum){
+
+        return chargingMapper.selChaIp(chaId,chaNum);
+
+
+    }
 
 
 }

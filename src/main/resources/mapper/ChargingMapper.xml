@@ -12,7 +12,326 @@
 
 
 
+    <!-- 根据桩id 查询桩ip及端口号等信息-->
+    <select id="selChaIp" resultType="com.chargeingpile.netty.chargeingpilenetty.pojo.BasChaPilPojo">
 
+       select
+		bcp.cha_ip,bcp.cha_por,bcp.cha_num,bcp.man_id,chp_com_equ,
+		(select
+		bm.man_nam from bas_man bm where bm.id = bcp.man_id) man_nam
+		from
+		bas_cha_pil bcp where 1 = 1
+
+        <if test="pileId != null and pileId !='' ">
+            AND bcp.id = #{pileId}
+        </if>
+        <if test="chaNum != null and chaNum !='' ">
+            AND bcp.cha_num = #{chaNum}
+        </if>
+
+
+
+
+    </select>
+
+
+
+
+    <!-- 充电桩实时 数据 新增  -->
+    <insert id="insertDatChaPilSta">
+        INSERT INTO dat_cha_pil_sta_copy (
+            cha_pil_id,
+            cha_gun_num,
+            cha_gun,
+            cha_gun_typ,
+            cha_sta,
+            now_soc,
+            ala_sta,
+            conn_sta,
+            all_mon,
+            dir_vol,
+            dir_cur,
+            bms_vol,
+            bms_cur,
+            bms_pat,
+            exc_a_vol,
+            exc_b_vol,
+            exc_c_vol,
+            exc_a_cur,
+            exc_b_cur,
+            exc_c_cur,
+            rem_tim,
+            cha_tim,
+            cha_ele_qua,
+            sta_rea,
+            end_rea,
+            cha_sta_typ,
+            cha_str,
+            cha_str_par,
+            app_mar,
+            cha_car,
+            app_tim_out,
+            sta_tim,
+            sta_bal,
+            cha_pow,
+            cur_tim
+        )
+        VALUES
+            (
+                #{zhuangId},
+                #{gunCount},
+                #{gun},
+                #{gunType},
+                #{workState},
+                #{SOC},
+                #{alarm},
+                #{carConnState},
+                #{curMoney},
+                #{DC_voltage},
+                #{DC_current},
+                #{BMS_voltage},
+                #{BMS_current},
+                #{BMS_type},
+                #{A_voltage},
+                #{B_voltage},
+                #{C_voltage},
+                #{A_current},
+                #{B_current},
+                #{C_current},
+                #{surplus_charge_time},
+                #{chargeDuration},
+                #{accumulativeEle},
+                #{charge_read_before},
+                #{charge_read},
+                #{chargeStartType},
+                #{chargeType},
+                #{chargeTypeParam},
+                #{orderFlag},
+                #{cardID},
+                0,
+                #{startTime},
+                #{cardBalance},
+                #{charge_power},
+                NOW()
+            );
+
+    </insert>
+
+
+
+    <!-- 充电桩数据新增  开始 和 结束   -->
+    <insert id="insertDatChaRes">
+
+
+        INSERT INTO dat_cha_rec_copy (
+            use_id,
+            chs_id,
+            chp_id,
+            cha_sta,
+            cha_sta_tim,
+            cha_end_tim,
+            cha_amo,
+            cha_ele_qua,
+            we_or_app,
+            sta_soc,
+            end_soc,
+            pur_ele_amo,
+            arr_tim,
+            out_tim,
+            payee,
+            remark,
+            dcr_inf,
+            openid,
+            cha_ord_num
+        )
+        VALUES
+            (
+                #{useId},
+                #{chsId},
+                #{chpId},
+                #{chaSta},
+                #{chaStaTim},
+                #{chaEndTim},
+                #{chaAmo},
+                #{chaEleQua},
+                #{weOrApp},
+                #{staSoc},
+                #{endSoc},
+                #{purEleAmo},
+                #{arrTim},
+                #{outTim},
+                #{payee},
+                #{remark},
+                #{dcrInf},
+                #{openid},
+                #{chaOrdNum}
+            );
+
+
+    </insert>
+
+
+
+    <!-- 充电站实时数据 （开始，结束。） -->
+    <insert id="insertDatChaInf">
+
+        INSERT INTO dat_cha_inf_copy (
+            cha_pil_id,
+             cha_gun_typ,
+             cha_gun,
+             cha_car,
+             sta_tim,
+             end_tim,
+             tim_len,
+             sta_soc,
+             end_soc,
+             cha_fin_rea,
+             cha_ele_qua,
+             sta_rea,
+             end_rea,
+             cha_mon,
+             sta_bal,
+             cha_str,
+             cha_str_par,
+             car_vin,
+             <!-- tim_cha_qua1,-->
+             sta_mod
+        )
+        VALUES
+            (
+                #{pileCode},
+                #{gunType},
+                #{gun},
+                #{cardID},
+                #{startTime},
+                #{endTime},
+                #{durationTime},
+                #{startSOC},
+                #{endSOC},
+                #{stopReason},
+                #{chargeEle},
+                #{chargeStart},
+                #{chargeEnd},
+                #{chargeMoney},
+                #{cardBalance},
+                #{chargeType},
+                #{chargeTypeParam},
+                #{carVIN},
+    <!--#{electric},-->
+    #{chargeStartType}
+);
+
+
+
+
+
+</insert>
+
+
+<!-- 添加告警 信息 -->
+    <insert id="insertAla">
+
+
+        INSERT INTO dat_ala (
+            ala_sta_tim,
+            ala_end_tim,
+            ala_typ_id,
+            ala_sta,
+            chp_id,
+            chs_id,
+            ala_lev,
+            ala_dec,
+            han_peo,
+            han_tim,
+            han_dec
+        )
+        VALUES
+            (
+                NOW(),
+                #{ala_end_tim},
+                #{ala_typ_id},
+                #{ala_sta},
+                #{chp_id},
+                #{chs_id},
+                #{ala_lev},
+                #{ala_dec},
+                #{han_peo},
+                #{han_tim},
+                #{han_dec}
+	);
+
+
+    </insert>
+
+
+<!-- 添加故障 信息 -->
+    <insert id="insertFau">
+
+
+        INSERT INTO dat_fau (
+            fau_sta_tim,
+            fau_end_tim,
+            fau_typ_id,
+            fau_sta,
+            chp_id,
+            chs_id,
+            fau_lev,
+            fau_dec,
+            han_peo,
+            han_tim,
+            han_dec
+        )
+        VALUES
+            (
+                NOW(),
+                #{fau_end_tim},
+                #{fau_typ_id},
+                #{fau_sta},
+                #{chp_id},
+                #{chs_id},
+                #{fau_lev},
+                #{fau_dec},
+                #{han_peo},
+                #{han_tim},
+                #{han_dec}
+	);
+
+    </insert>
+
+
+
+
+    <!-- 修改充电桩 状态  -->
+    <update id="updChaPilSta">
+
+        UPDATE bas_cha_pil
+            SET
+
+            cha_pil_sta = #{chaPilSta}
+            fau_sta = #{fauSta}
+
+            WHERE 1 = 1
+
+            <if test="id != null and id =='' ">
+               AND id = #{id}
+            </if>
+            <if test="chp_nam != null and chp_nam =='' ">
+                AND chp_nam = #{chp_nam}
+            </if>
+            <if test="cha_num != null and cha_num =='' ">
+                AND cha_num = #{cha_num}
+            </if>
+            <if test="cha_ip != null and cha_ip =='' ">
+                AND cha_ip = #{cha_ip}
+            </if>
+
+
+
+
+
+
+
+    </update>
 
 
 </mapper>
