@@ -1,10 +1,12 @@
 package com.chargeingpile.netty.chargeingpilenetty.controller;
 
 import com.chargeingpile.netty.chargeingpilenetty.config.ServerResponse;
+import com.chargeingpile.netty.chargeingpilenetty.mapper.ChargingMapper;
 import com.chargeingpile.netty.chargeingpilenetty.pojo.BasChaPilPojo;
 import com.chargeingpile.netty.chargeingpilenetty.service.ChargingService;
 import com.chargeingpile.netty.chargeingpilenetty.service.serviceImpl.ChargingServiceImpl;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.SHCmd;
+import com.chargeingpile.netty.chargeingpilenetty.shenghong.SHUtils;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.manager.ClientConnection;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.manager.ClientManager;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.message.ChargeRecordInfo;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 import sun.security.krb5.Config;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,17 +60,20 @@ public class ChargingController {
     private ChargingServiceImpl chargingService;
 
 
+    @Autowired
+    private ChargingMapper chargingMapper;
 
 
 
 
+
+
+    @ApiIgnore
     @ApiOperation(value = "开启服务")
     @PostMapping(value = "/startServer")
     public ServerResponse startService() {
 
-
             return chargingService.startService();
-
 
     }
 
@@ -77,13 +83,14 @@ public class ChargingController {
 
     @ApiOperation(value = "停止服务")
     @PostMapping(value = "/stopServer")
-    public ServerResponse stopService(@RequestParam(name = "充电桩编号（如果参数不传，则停止所有服务。）",required = false) String cha_num) {
+    public ServerResponse stopService() {
 
         Map resultMap = new HashMap();
         Map failureMap = new HashMap();
         Map successMap = new HashMap();
 
-        List<BasChaPilPojo> chaList = chargingService.selChaIp(null,cha_num);
+        // 获取所有 客户端 ip
+        List<BasChaPilPojo> chaList = chargingService.selChaIp(null,null);
 
         if (chaList.size() > 0 ){
 
@@ -127,17 +134,17 @@ public class ChargingController {
      */
     @ApiOperation(value = "即时充电-----开启")
     @PostMapping(value = "/startOrder")
-    public ServerResponse startOrder(@RequestParam(name = "开始时间(可为空)",required = false) String staTim,
-                                     @RequestParam(name = "结束时间(可为空)",required = false) String endTime,
-                                     @RequestParam(name = "充电桩编号") String cha_num,
-                                     @RequestParam(name = "用户id") String userId,
-                                     @RequestParam(name = "即时充电-开启，状态为1。(默认为1)",defaultValue = "1") String flag){
+    public ServerResponse startOrder(@RequestParam(value = "staTim",required = false) String staTim,
+                                     @RequestParam(value = "endTime",required = false) String endTime,
+                                     @RequestParam(value = "cha_num") String cha_num,
+                                     @RequestParam(value = "userId") String userId,
+                                     //value = "即时充电-开启，状态为1。(默认为1)",
+                                     @RequestParam(value = "flag",defaultValue = "1") String flag){
         try {
 
 
 
             // chp_id  use_id  sta_tim  end_tim tim_len flag dev_add_num
-
 
             // 充电桩ID
             final String chp_id = "";
@@ -202,7 +209,16 @@ public class ChargingController {
                     desc = "开启充电成功";
                     retMap.put("state", 1);
 
-                    return ServerResponse.createBySuccess("开启充电成功",retMap);
+                    //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
+                    // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警',
+                    //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
+                    // 修改设备的状态
+                   // chargingMapper.updChaPilSta(null,null, cha_num,null,"1","0");
+
+
+                    return ServerResponse.createBySuccess("开启充电成功。",retMap);
+
+
 
 
                     //new Thread(new ChargeRun(cha_num)).start();
@@ -310,6 +326,14 @@ public class ChargingController {
                                     // 充电
                                     desc = "开启充电成功";
                                     retMap.put("state", 1);
+
+                                    //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
+                                    // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警',
+                                    //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
+                                    // 修改设备的状态
+                                    //chargingMapper.updChaPilSta(null,null, cha_num,null,"1","0");
+
+
                                     return ServerResponse.createBySuccess("开启充电成功。",retMap);
 
                                    // break;
@@ -346,9 +370,22 @@ public class ChargingController {
     @ApiOperation(value = "即时充电-----关闭")
     @PostMapping(value = "/stopCharge")
     public ServerResponse stopCharge(
-            @RequestParam(name = "充电桩编号") String cha_num,
-            @RequestParam(name = "即时充电-停止，状态为1.",defaultValue = "1") String flag) {
+            @RequestParam(value = "cha_num") String cha_num,
+            @RequestParam(value = "userId") String userId,
+            //即时充电-停止，状态为1
+            @RequestParam(value = "flag",defaultValue = "1") String flag) {
         try {
+
+
+
+            if (cha_num.isEmpty()){
+                return ServerResponse.createByErrorMessage("充电桩编号不能为空");
+            }
+
+             if (userId.isEmpty()){
+                return ServerResponse.createByErrorMessage("用户唯一识别号不能为空");
+            }
+
 
 
             // chp_id  use_id  flag  dev_add_num
@@ -413,6 +450,13 @@ public class ChargingController {
 
                     retMap.put("state", 1);
 
+                    //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
+                    // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警',
+                    //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
+                    // 修改设备的状态
+                    //chargingMapper.updChaPilSta(null,null, cha_num,null,"2","0");
+
+
                 } else {
                     if (!CommonUtil.isEmpty(chp_ip)) {
                         ClientConnection client = ClientManager.getClientConnection(chp_ip, cha_num);
@@ -476,6 +520,14 @@ public class ChargingController {
                                     retMap.put("desc","停止充电成功");
                                     retMap.put("state", 1);
 
+
+                                    //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
+                                    // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警',
+                                    //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
+                                    // 修改设备的状态
+                                    //chargingMapper.updChaPilSta(null,null, cha_num,null,"2","0");
+
+
                                     ChargeRecordInfo charge = client.getChargeRecordInfo();
 
                                     if (charge != null) {
@@ -518,12 +570,12 @@ public class ChargingController {
 
     /**
      * 获取充电桩实时数据
-     * @param chp_id
+     * @param chp_id 充电桩编号
      * @return
      */
     @ApiOperation(value = "充电桩实时数据获取")
     @PostMapping(value = "/chaReaTim")
-    public ServerResponse chaReaTim(@RequestParam(name = "充电桩id-chp_id") String chp_id){
+    public ServerResponse chaReaTim(@RequestParam(value = "chp_id") String chp_id){
 
         EhcacheUtil ehcache = EhcacheUtil.getInstance();
 
@@ -544,7 +596,7 @@ public class ChargingController {
      */
     @ApiOperation(value = "获取充电桩告警状态")
     @PostMapping(value = "/getAlarm")
-    public ServerResponse getAlarm(@RequestParam(name = "充电桩id-chp_id") String chp_id){
+    public ServerResponse getAlarm(@RequestParam(value = "chp_id") String chp_id){
 
         EhcacheUtil ehcache = EhcacheUtil.getInstance();
 

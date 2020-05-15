@@ -9,13 +9,16 @@ import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.BytesUtil;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.CommonUtil;
 import com.chargeingpile.netty.chargeingpilenetty.util.ApplicationContextUtils;
 import com.chargeingpile.netty.chargeingpilenetty.util.EhcacheUtil;
+import com.chargeingpile.netty.chargeingpilenetty.util.PileStaUtil;
 import com.chargeingpile.netty.chargeingpilenetty.util.StringUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.ReferenceCountUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,12 +69,30 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
 
             PileStateInfo info = PileStateInfo.getStateInfo(msg);
 
-            chargingMapper.insertDatChaPilSta(info);
+            String carIdStr = BytesUtil.bytesToHexString(info.getCardID());
 
+            //System.out.println("----carId-------"+carIdStr);
+
+            info.setCarIdStr(carIdStr);
+
+            chargingMapper.insertDatChaPilSta(info);   // 实时数据上传
 
             int pileState = info.getWorkState();
 
-            System.out.println("盛宏充电桩，状态信息上报-------------"+info.getZhuangId()+"---"+pileState);
+
+            int sta = PileStaUtil.getPileSta(pileState); // 桩和 数据库中的状态不一致 转换
+
+            System.out.println("盛宏充电桩，实时状态信息上报---------insert pile:----"+SHUtils.getPileNum(msg)+"----sta:--"+pileState+"===="+sta);
+
+            //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
+            // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警',
+
+            //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
+            // 修改设备的状态
+            //chargingMapper.updChaPilSta(null,null, SHUtils.getPileNum(msg),null,String.valueOf(sta),"0");
+            chargingMapper.updChaPilStaNew(SHUtils.getPileNum(msg),String.valueOf(sta));
+
+
 
             String gun = BytesUtil.byteToHexString(info.getGun());
             String cardStr = BytesUtil.bytesToHexString(info.getCardID());
@@ -93,13 +114,17 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                     String id = client.getUserID();
 
                     System.out.println("开启中 是在充电的状态。"+id+"---"+client.getPile_code()+client);
-                }
 
+                    //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
+                    // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警',
+                    //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
+                    // 修改设备的状态
+                    //chargingMapper.updChaPilSta(null,null, SHUtils.getPileNum(msg),null,"1","0");
+                }
 
                 client.setPileState(pileState);
 
             }
-
 
             // 实时充电数据放入缓存
             StateInfo stateInfo = StateInfo.getIns(msg);
@@ -132,33 +157,40 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
 
 
             // 告警状态
-            Map<String, Object> alarmMap = new HashMap<String, Object>();
+            Map<String, Object> fauMap = new HashMap<String, Object>();
 
 
             //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
 
-            if (4 == stateInfo.getAlarm() || 6 == stateInfo.getAlarm()){
-                // 插入告警
+            if (6 == stateInfo.getAlarm()){
+                // 插入故障
                 //更新告警状态
-                // 插入 实时数据信息
+                System.out.println("insert fau -----------------"+stateInfo.getAlarm());
 
-               // alarmMap.put("ala_typ_id", "1");
-               // alarmMap.put("ala_sta", "1");
-               // alarmMap.put("chp_id", stateInfo.getZhuangId());
-               // alarmMap.put("chs_id", "9");
-               // alarmMap.put("ala_lev", "1");
-                //alarmMap.put("ala_dec", "发生了故障");
+                fauMap.put("ala_typ_id", "1");
+                fauMap.put("ala_sta", "1");
+                fauMap.put("chp_id", stateInfo.getZhuangId());
+                fauMap.put("chs_id", "9");
+                fauMap.put("ala_lev", "1");
+                fauMap.put("ala_dec", "发生了故障(不能给汽车充电)");
 
-                //chargingMapper.insertAla(alarmMap); //添加告警信息
+                chargingMapper.insertFau(fauMap); //添加故障信息
+
+
+
+
+                // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警）',
+                //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
+                // 修改设备的状态
+                //chargingMapper.updChaPilSta(null,null,stateInfo.getZhuangId(),null,"6","3");
 
             }
 
-            alarmMap.put("alarm", stateInfo.getAlarm());
-            System.out.println("alaMap=========="+alarmMap);
+            fauMap.put("alarm", stateInfo.getAlarm());
+            System.out.println("alaMap=========="+fauMap);
 
 
-            ehcache.put(pipleCode+"alarm",alarmMap);
-
+            ehcache.put(pipleCode+"alarm",fauMap);
 
 
 
@@ -173,8 +205,6 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
             //System.out.println(info.toString());
 
             // 新增 充电记录信息 dat_cha_inf
-
-
             //响应
             String gun = BytesUtil.int2HexString(info.getGun());
             String card = BytesUtil.bytesToHexString(info.getCarId());
@@ -184,7 +214,6 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
 
             //System.out.println("上传 cmd=201");
 
-
             String id = "";
             if (client != null) {
                 id = client.getPile_code();
@@ -192,9 +221,20 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                 client.setChargeRecordInfo(info);
                 System.out.println("1.停止充电时用到，充电信息----"+client.getChargeRecordInfo());
 
+                System.out.println("2.48个时间段的充电信息（每个时段电量2个字节）-------"+Arrays.toString(client.getChargeRecordInfo().getElectric()));
+
+               // System.out.println("3.48个时间段的充电信息-------"+BytesUtil.bytesToHexString(client.getChargeRecordInfo().getElectric()));
+
+                System.out.println("3.48个时间段的充电信息-------"+ StringUtils.join(BytesUtil.bytesToHexString2(client.getChargeRecordInfo().getElectric()),","));
+
+                byte [] a = client.getChargeRecordInfo().getElectric();
+
+                System.out.println("electric========="+BytesUtil.toHexString(a));
+
+
+
                 //新增充电记录
                 chargingMapper.insertDatChaInf(client.getChargeRecordInfo());
-
 
 
                 //新增记录
@@ -220,7 +260,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                // map.put("payee",);  收款人
                 //map.put("remark",); 备注
                 //map.put("dcrInf",); 充电记录信息
-                //map.put("openid",); 微信唯一标识
+                map.put("openid",chInfo.getCardID()); //微信唯一标识
                 //map.put("chaOrdNum",);充电订单号
                 chargingMapper.insertDatChaRes(map);
             }
@@ -238,10 +278,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
 
                     System.out.println("充电桩 上报  告警信息  : code====" + info.getPile_code()+"alarmType===="+info.getAlarmType());
                     //System.out.println("alarms==========="+info.getAlarms());
-
-
                     //新增告警
-
                     //AlarmInfo_dao.updateChpStaAlarm(pipleCode);
 
                     //alarmMap.put("ala_typ_id", "1");
@@ -254,6 +291,12 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                     chargingMapper.insertAla(alarmMap); //添加告警信息
 
                     ehcache.put(info.getPile_code()+"alarm",alarmMap);
+
+                    // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警',
+                    //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
+                    // 修改设备的状态
+                    //chargingMapper.updChaPilSta(null,null,info.getPile_code(),null,"6","2");
+
 
                 }
 

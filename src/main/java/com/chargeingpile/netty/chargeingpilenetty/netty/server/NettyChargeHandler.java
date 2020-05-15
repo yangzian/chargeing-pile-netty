@@ -1,14 +1,17 @@
 package com.chargeingpile.netty.chargeingpilenetty.netty.server;
 
+import com.chargeingpile.netty.chargeingpilenetty.mapper.ChargingMapper;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.SHUtils;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.manager.ClientConnection;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.manager.ClientManager;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.message.*;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.BytesUtil;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.CommonUtil;
+import com.chargeingpile.netty.chargeingpilenetty.util.ApplicationContextUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.ReferenceCountUtil;
+import org.springframework.context.ApplicationContext;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -17,6 +20,14 @@ import java.util.Map;
 
 // 预约/充电
 public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
+
+
+
+
+    private ApplicationContext applicationContext= ApplicationContextUtils.getApplicationContext();
+
+    ChargingMapper chargingMapper = applicationContext.getBean(ChargingMapper.class);
+
 
 
     private int flag;
@@ -77,6 +88,14 @@ public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
                         System.out.println("开启充电 -- 成功");
 
                         client.setPileState(ClientConnection.STATE_CHARGE);// 2
+
+                        //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
+                        // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警',
+                        //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
+                        // 修改设备的状态
+                        //chargingMapper.updChaPilSta(null,null, pile,null,"1","0");
+
+
                         //client.setPileState(ClientConnection.STATE_READY);// 1
 
 //						String id = client.getUserID();
@@ -101,6 +120,15 @@ public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
                     //client.setPileState(ClientConnection.STATE_CHARGE_OVER); //3
 
                     System.out.println("停止充电--成功");
+
+                    //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
+
+                    // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警',
+                    //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
+                    // 修改设备的状态
+                   // chargingMapper.updChaPilSta(null,null, pile,null,"2","0");
+
+
                 }
             } else {
                 if (client != null) {

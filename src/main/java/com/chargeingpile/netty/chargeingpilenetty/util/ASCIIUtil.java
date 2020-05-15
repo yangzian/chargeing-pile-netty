@@ -1,6 +1,7 @@
 package com.chargeingpile.netty.chargeingpilenetty.util;
 
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.BytesUtil;
+import org.junit.Test;
 
 public class ASCIIUtil {
 
@@ -67,6 +68,14 @@ public class ASCIIUtil {
 
         return builder.toString();
     }
+
+
+    @Test
+    public void demo(){
+        String a = ASCII2HexString("");
+        System.out.println(a);
+    }
+
 
     /**
      * 10进制转换为相应的ascii码16进制形式

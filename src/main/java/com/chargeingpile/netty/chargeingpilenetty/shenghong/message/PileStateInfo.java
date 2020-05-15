@@ -171,6 +171,8 @@ public class PileStateInfo {
 	 */
 	private byte[] cardID = new byte[32];
 
+	private String carIdStr;
+
 	/**
 	 * 预约/开始充电 开始时间
 	 */
@@ -564,4 +566,11 @@ public class PileStateInfo {
 		this.charge_read = charge_read;
 	}
 
+	public String getCarIdStr() {
+		return carIdStr;
+	}
+
+	public void setCarIdStr(String carIdStr) {
+		this.carIdStr = carIdStr;
+	}
 }

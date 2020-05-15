@@ -107,7 +107,7 @@
                 #{chargeType},
                 #{chargeTypeParam},
                 #{orderFlag},
-                #{cardID},
+                #{carIdStr},
                 0,
                 #{startTime},
                 #{cardBalance},
@@ -306,10 +306,8 @@
 
         UPDATE bas_cha_pil
             SET
-
-            cha_pil_sta = #{chaPilSta}
+            cha_pil_sta = #{chaPilSta},
             fau_sta = #{fauSta}
-
             WHERE 1 = 1
 
             <if test="id != null and id =='' ">
@@ -324,6 +322,19 @@
             <if test="cha_ip != null and cha_ip =='' ">
                 AND cha_ip = #{cha_ip}
             </if>
+
+    </update>
+
+
+
+    <!-- 修改充电桩 状态  -->
+    <update id="updChaPilStaNew">
+
+        UPDATE bas_cha_pil
+            SET
+            cha_pil_sta = #{chaPilSta}
+            WHERE 1 = 1
+                AND cha_num = #{cha_num}
 
 
 

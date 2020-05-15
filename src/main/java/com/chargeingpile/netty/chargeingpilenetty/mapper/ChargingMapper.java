@@ -83,6 +83,19 @@ public interface ChargingMapper {
        int updChaPilSta(@Param("id")String id,
                         @Param("chp_nam")String chp_nam,
                         @Param("cha_num")String cha_num,
-                        @Param("cha_ip")String cha_ip);
+                        @Param("cha_ip")String cha_ip,
+                        @Param("chaPilSta")String chaPilSta,
+                        @Param("fauSta")String fauSta
+                        );
+
+    /**
+     * 修改充电桩 状态
+     * @param cha_num 充电桩编号
+     * @return
+     */
+       int updChaPilStaNew(
+                        @Param("cha_num")String cha_num,
+                        @Param("chaPilSta")String chaPilSta
+                        );
 
 }

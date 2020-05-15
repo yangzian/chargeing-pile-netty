@@ -1,5 +1,7 @@
 package com.chargeingpile.netty.chargeingpilenetty.utils;
 
+import org.junit.Test;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -117,6 +119,18 @@ public class BytesUtil {
 		}
 		return stringBuilder.toString();
 	}
+
+
+	@Test
+	public void demo(){
+
+
+
+		//String a = bytesToHexString();
+
+	}
+
+
 
 	/**
 	 * 空格分隔
