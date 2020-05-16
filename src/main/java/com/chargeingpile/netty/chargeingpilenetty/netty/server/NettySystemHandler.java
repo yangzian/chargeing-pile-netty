@@ -136,7 +136,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
             System.out.println("实时充电数据放入缓存,桩编号--------pipleCode---"+pipleCode);
 
             Map<String, Object> retMap = new HashMap<String, Object>();
-            retMap.put("elec", stateInfo.getElecQua());
+            retMap.put("elec", stateInfo.getElecQua());//本次充电电量 0.01kwh
             retMap.put("time", stateInfo.getCharTim());
             retMap.put("DC_v", stateInfo.getDireV());
             retMap.put("DC_i", stateInfo.getDireI());
@@ -251,7 +251,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                 map.put("chaEndTim",chInfo.getEndTime());
                 map.put("chaAmo",chInfo.getChargeMoney());
                 map.put("chaEleQua",chInfo.getChargeEle());
-                map.put("weOrApp",1); //微信为2，app为1
+                map.put("weOrApp",2); //微信为2，app为1
                 map.put("staSoc",chInfo.getStartSOC());
                 map.put("endSoc",chInfo.getEndSOC());
                 //map.put("purEleAmo",); 购电金额
@@ -260,7 +260,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                // map.put("payee",);  收款人
                 //map.put("remark",); 备注
                 //map.put("dcrInf",); 充电记录信息
-                map.put("openid",chInfo.getCardID()); //微信唯一标识
+                map.put("openid",ehcache.get(chInfo.getPileCode()+"openId")); //微信唯一标识
                 //map.put("chaOrdNum",);充电订单号
                 chargingMapper.insertDatChaRes(map);
             }

@@ -54,7 +54,11 @@ public class SHUtils {
 		byte[] lenb = BytesUtil.toBytes(len);
 		System.arraycopy(lenb, 0, res, 2, 2);
 		res[4] = (byte) 0x10;
+
+        System.out.println("sequence========="+sequence);
 		res[5] = (byte) Integer.parseInt(Integer.toHexString(sequence));
+
+		//res[5] = 1;
 		// cmd
 		System.arraycopy(cmd, 0, res, 6, 2);
 

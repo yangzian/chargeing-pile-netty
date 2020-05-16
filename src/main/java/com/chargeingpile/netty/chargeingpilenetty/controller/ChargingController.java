@@ -16,6 +16,7 @@ import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.BytesUtil;
 import com.chargeingpile.netty.chargeingpilenetty.util.ASCIIUtil;
 import com.chargeingpile.netty.chargeingpilenetty.util.CommonUtil;
 import com.chargeingpile.netty.chargeingpilenetty.util.EhcacheUtil;
+import com.chargeingpile.netty.chargeingpilenetty.util.StringUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -68,7 +69,7 @@ public class ChargingController {
 
 
 
-    @ApiIgnore
+    //@ApiIgnore
     @ApiOperation(value = "开启服务")
     @PostMapping(value = "/startServer")
     public ServerResponse startService() {
@@ -138,11 +139,14 @@ public class ChargingController {
                                      @RequestParam(value = "endTime",required = false) String endTime,
                                      @RequestParam(value = "cha_num") String cha_num,
                                      @RequestParam(value = "userId") String userId,
+                                     @RequestParam(value = "openId") String openId,
                                      //value = "即时充电-开启，状态为1。(默认为1)",
                                      @RequestParam(value = "flag",defaultValue = "1") String flag){
         try {
 
 
+            EhcacheUtil ehcache = EhcacheUtil.getInstance();
+            ehcache.put(cha_num+"openId",openId);
 
             // chp_id  use_id  sta_tim  end_tim tim_len flag dev_add_num
 
@@ -192,6 +196,14 @@ public class ChargingController {
                 chp_ip = chaList.get(0).getChaIp();
                 chp_por = chaList.get(0).getChaPor();
                 cha_num = chaList.get(0).getChaNum();
+
+                String pilSta = chaList.get(0).getChaPilSta();
+
+                if (!StringUtil.equals("2",pilSta)){
+                    return ServerResponse.createByErrorMessage("编号："+cha_num+"的充电桩非空闲状态，暂时无法开启，请重新连接。");
+                }
+
+
                 //chp_com_equ = chaPojo.getChpComEqu();
                 //man_nam = chaPojo.getManNam();
 
@@ -201,6 +213,7 @@ public class ChargingController {
 
             Map<String, Object> retMap = new HashMap<String, Object>();
 
+            Thread.sleep(2000);
 
             if (chp_por.equals("9999")) { //盛宏
 
@@ -372,6 +385,7 @@ public class ChargingController {
     public ServerResponse stopCharge(
             @RequestParam(value = "cha_num") String cha_num,
             @RequestParam(value = "userId") String userId,
+            @RequestParam(value = "openId") String openId,
             //即时充电-停止，状态为1
             @RequestParam(value = "flag",defaultValue = "1") String flag) {
         try {
@@ -425,6 +439,13 @@ public class ChargingController {
                 //chp_com_equ = chaPojo.getChpComEqu();
                 //man_nam = chaPojo.getManNam();
 
+                String pilSta = chaList.get(0).getChaPilSta();
+
+                if (StringUtil.equals("2",pilSta)){
+                    return ServerResponse.createByErrorMessage("编号："+cha_num+"的充电桩已经是空闲状态，请勿重复关闭。");
+                }
+
+
             }
 
 
@@ -433,9 +454,9 @@ public class ChargingController {
             Map<String, Object> retMap = new HashMap<String, Object>();
             String desc = "";
 
-            if (chp_por.equals("9999")){
+            Thread.sleep(2000);
 
-                Thread.sleep(2000);
+            if (chp_por.equals("9999")){
 
                 if (TEST) {
 

@@ -14,6 +14,8 @@ public class BasChaPilPojo implements Serializable {
     public String chpComEqu;// 通讯设备
     public String manNam;// 厂家名称
 
+    public String chaPilSta;
+
 
     public String getChaIp() {
         return chaIp;
@@ -53,5 +55,14 @@ public class BasChaPilPojo implements Serializable {
 
     public void setManNam(String manNam) {
         this.manNam = manNam;
+    }
+
+
+    public String getChaPilSta() {
+        return chaPilSta;
+    }
+
+    public void setChaPilSta(String chaPilSta) {
+        this.chaPilSta = chaPilSta;
     }
 }
