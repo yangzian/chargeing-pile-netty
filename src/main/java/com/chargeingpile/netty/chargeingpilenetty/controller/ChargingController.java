@@ -25,10 +25,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import sun.security.krb5.Config;
 
@@ -596,7 +593,7 @@ public class ChargingController {
      * @return
      */
     @ApiOperation(value = "充电桩实时数据获取")
-    @PostMapping(value = "/chaReaTim")
+    @GetMapping(value = "/chaReaTim")
     public ServerResponse chaReaTim(@RequestParam(value = "chp_id") String chp_id){
 
         EhcacheUtil ehcache = EhcacheUtil.getInstance();
