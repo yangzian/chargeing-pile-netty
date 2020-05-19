@@ -28,7 +28,7 @@ public class NettyClient implements Runnable{
 
     @Override
     public void run() {
-        // Configure the client.
+        // Configure the client.//
         EventLoopGroup group = new NioEventLoopGroup();
         try {
 

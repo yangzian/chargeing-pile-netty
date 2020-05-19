@@ -22,7 +22,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
 
 
-        //System.out.println("ClientHandler Active --------------------------");
+        //System.out.println("ClientHandler Active ----------------------------");
 
 
     }

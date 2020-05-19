@@ -111,7 +111,7 @@ public class ShHeartBeatHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-      //  log.error("exceptionCaught --> " + cause.toString());
+      //  log.error("exceptionCaught ---> " + cause.toString());
 
         //System.out.println("exceptionCaught --> " + cause.toString());
         ctx.close();

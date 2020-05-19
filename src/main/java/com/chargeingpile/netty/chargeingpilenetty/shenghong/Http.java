@@ -16,7 +16,7 @@ public class Http {
 //	private static final String com_ip  = "192.168.23.6";
 //	private static final String com_por = "8080";
 //	private static final String CHARGE_URL = "/chargePileServer/service/endChaPus.htm";
-	
+	//
 	private static final String com_ip  = "139.196.235.78";
 	private static final String com_por = "80";
 	private static final String CHARGE_URL = "/service/endChaPus.htm";

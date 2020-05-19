@@ -25,7 +25,7 @@ public class MyDecoder extends MessageToMessageDecoder<byte[]> {
     protected void decode(ChannelHandlerContext ctx, byte[] msg, List<Object> out) throws Exception {
         try {
 
-            //log.info("decode --> " + BytesUtil.bytesToHexString2(msg));
+            //log.info("decode ---> " + BytesUtil.bytesToHexString2(msg));
 
             // 区分桩类型
             /*if (SWUtils.isShuoWei(msg)) {

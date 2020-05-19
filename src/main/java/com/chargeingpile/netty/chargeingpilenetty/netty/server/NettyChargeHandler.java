@@ -66,7 +66,7 @@ public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
 
         String pile = SHUtils.getPileNum(msg);
 
-
+//
         final ClientConnection client = ClientManager.getClientConnection(ip,pile);
 
 

@@ -69,7 +69,7 @@ public class ShServerHandler extends SimpleChannelInboundHandler<byte[]> {
                         ChargeRecordInfo info = ChargeRecordInfo.getInfo(msg);
                         pipleCode = info.getPileCode();
 
-                        //log.info( "pipleCode = "+ pipleCode +" 上报充电记录");
+                        //log.info( "pipleCode =  "+ pipleCode +" 上报充电记录");
                         //log.info( info.toString());
                       //  System.out.println("pipleCode = "+ pipleCode +" 上报充电记录");
                        // System.out.println(info.toString());

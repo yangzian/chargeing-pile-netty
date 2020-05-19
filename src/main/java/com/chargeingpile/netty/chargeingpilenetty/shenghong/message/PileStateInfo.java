@@ -182,6 +182,7 @@ public class PileStateInfo {
 	 */
 	private byte[] startTime = new byte[8];
 	private String staTime;
+
 	/**
 	 * 充电前卡余额
 	 */

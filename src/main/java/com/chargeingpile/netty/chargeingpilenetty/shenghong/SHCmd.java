@@ -60,7 +60,7 @@ public class SHCmd {
 		System.out.println("sta====ctx========="+ctx);
 		System.out.println("sta====ctx.channel()========="+ctx.channel());
 		System.out.println("sta====ctx.channel().pipeline()========="+ctx.channel().pipeline());
-		System.out.println("sta====ctx.channel().pipeline().get()========="+ctx.channel().pipeline().get("charge"));
+		System.out.println("sta====ctx.channel().pipeline().get()=========="+ctx.channel().pipeline().get("charge"));
 
 		NettyChargeHandler handler = null;
 		handler = (NettyChargeHandler) ctx.channel().pipeline().get("charge") ;

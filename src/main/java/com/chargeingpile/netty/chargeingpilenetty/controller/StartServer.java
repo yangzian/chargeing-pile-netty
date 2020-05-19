@@ -53,7 +53,7 @@ public class StartServer implements ApplicationRunner {
         //System.out.println("setServletContext is start");
 
         InetSocketAddress address = new InetSocketAddress(soketIp, soketPort);
-
+//
         //System.out.println("address-------------"+address);
 
         int i =  nettyServer.start(address);

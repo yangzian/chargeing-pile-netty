@@ -31,7 +31,7 @@ public class NettyServer {
         //配置服务端的NIO线程组
          bossGroup = new NioEventLoopGroup();
          workerGroup = new NioEventLoopGroup();
-
+//
         try {
                  bootstrap = new ServerBootstrap()
                         .group(bossGroup, workerGroup)  // 绑定线程池

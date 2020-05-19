@@ -12,7 +12,7 @@
 
 
 
-    <!-- 根据桩id 查询桩ip及端口号等信息-->
+    <!-- 根据桩id 查询桩ip及端口号等信息 -->
     <select id="selChaIp" resultType="com.chargeingpile.netty.chargeingpilenetty.pojo.BasChaPilPojo">
 
        select

@@ -279,7 +279,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                     //System.out.println("alarms==========="+info.getAlarms());
                     //新增告警
                     //AlarmInfo_dao.updateChpStaAlarm(pipleCode);
-
+//
                     //alarmMap.put("ala_typ_id", "1");
                     //alarmMap.put("ala_sta", "1");
                     alarmMap.put("chp_id", info.getPile_code());

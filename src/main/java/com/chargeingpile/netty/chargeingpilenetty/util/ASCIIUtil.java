@@ -72,7 +72,7 @@ public class ASCIIUtil {
 
     @Test
     public void demo(){
-        String a = ASCII2HexString("12");
+        String a = ASCII2HexString("17");
 
         System.out.println(a);
     }

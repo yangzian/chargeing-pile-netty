@@ -294,7 +294,7 @@ private String pileCode = "";
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 
         ctx.close();
-
+//
        // System.out.println(ctx.channel().id() + " guanbi,此连接被关闭" + "此时连通数量: " + CHANNEL_MAP.size());
 
 

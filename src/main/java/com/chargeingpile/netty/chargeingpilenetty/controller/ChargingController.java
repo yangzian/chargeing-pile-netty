@@ -144,7 +144,7 @@ public class ChargingController {
                                      //value = "即时充电-开启，状态为1。(默认为1)",
                                      @RequestParam(value = "flag",defaultValue = "1") String flag){
         try {
-
+//
 
             EhcacheUtil ehcache = EhcacheUtil.getInstance();
             ehcache.put(cha_num+"openId",openId);
