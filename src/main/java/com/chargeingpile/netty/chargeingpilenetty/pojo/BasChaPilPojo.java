@@ -16,6 +16,15 @@ public class BasChaPilPojo implements Serializable {
 
     public String chaPilSta;
 
+    public String chaId; // 桩id
+
+    public String getChaId() {
+        return chaId;
+    }
+
+    public void setChaId(String chaId) {
+        this.chaId = chaId;
+    }
 
     public String getChaIp() {
         return chaIp;

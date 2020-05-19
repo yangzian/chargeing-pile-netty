@@ -161,7 +161,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
             Map<String, Object> fauMap = new HashMap<String, Object>();
 
 
-            //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
+            //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充电)
 
             if (6 == stateInfo.getAlarm()){
                 // 插入故障
@@ -170,7 +170,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
 
                 fauMap.put("ala_typ_id", "1");
                 fauMap.put("ala_sta", "1");
-                fauMap.put("chp_id", stateInfo.getZhuangId());
+                fauMap.put("chp_id", ehcache.get(stateInfo.getZhuangId())); // 桩id 缓存中 根据桩编号获取桩id
                 fauMap.put("chs_id", "9");
                 fauMap.put("ala_lev", "1");
                 fauMap.put("ala_dec", "发生了故障(不能给汽车充电)");
@@ -243,7 +243,8 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
 
                 map.put("useId",chInfo.getCardID());
                 map.put("chsId",9); //电站
-                map.put("chpId",chInfo.getPileCode());
+                //map.put("chpId",chInfo.getPileCode());// 设备编号
+                map.put("chpId",ehcache.get(chInfo.getPileCode()));// 设备id 通过编号从缓存中获取设备id
                 map.put("chaSta",2); // 充电状态 1为正在充电，2为充电已完成
                 map.put("chaStaTim",chInfo.getStartTime());
                 map.put("chaEndTim",chInfo.getEndTime());
@@ -287,7 +288,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                     alarmMap.put("ala_lev", info.getAlarmType());
                     alarmMap.put("ala_dec", info.getAlarms().toString()); ////告警位,32个字节。 每一位代码一个告警，共可表示 256 个告警，具体含义待定义 （ 为服务器能了解桩的告警信息）
 
-                    chargingMapper.insertAla(alarmMap); //添加告警信息
+                    //chargingMapper.insertAla(alarmMap); //添加告警信息
 
                     ehcache.put(info.getPile_code()+"alarm",alarmMap);
 

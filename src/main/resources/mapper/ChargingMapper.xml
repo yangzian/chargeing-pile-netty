@@ -16,7 +16,7 @@
     <select id="selChaIp" resultType="com.chargeingpile.netty.chargeingpilenetty.pojo.BasChaPilPojo">
 
        select
-		bcp.cha_ip,bcp.cha_por,bcp.cha_num,bcp.man_id,bcp.chp_com_equ,bcp.cha_pil_sta,bcp.id,
+		bcp.cha_ip,bcp.cha_por,bcp.cha_num,bcp.man_id,bcp.chp_com_equ,bcp.cha_pil_sta,bcp.id chaId,
 		(select
 		bm.man_nam from bas_man bm where bm.id = bcp.man_id) man_nam
 		from
