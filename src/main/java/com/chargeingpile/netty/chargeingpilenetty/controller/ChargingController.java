@@ -593,7 +593,7 @@ public class ChargingController {
      * @return
      */
     @ApiOperation(value = "充电桩实时数据获取")
-    @GetMapping(value = "/chaReaTim")
+    @PostMapping(value = "/chaReaTim")
     public ServerResponse chaReaTim(@RequestParam(value = "chp_id") String chp_id){
 
         EhcacheUtil ehcache = EhcacheUtil.getInstance();
