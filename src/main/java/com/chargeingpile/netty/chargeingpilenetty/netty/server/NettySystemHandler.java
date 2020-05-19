@@ -166,7 +166,7 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
             if (6 == stateInfo.getAlarm()){
                 // 插入故障
                 //更新告警状态
-             //   System.out.println("insert fau -----------------"+stateInfo.getAlarm());
+             //   System.out.println("insert fau -------------------"+stateInfo.getAlarm());
 
                 fauMap.put("ala_typ_id", "1");
                 fauMap.put("ala_sta", "1");

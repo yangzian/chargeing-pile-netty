@@ -173,7 +173,7 @@
 
 
 
-    <!-- 充电站实时数据 （开始，结束。） -->
+    <!-- 充电站实时数据 （开始，结束。）   -->
     <insert id="insertDatChaInf">
 
         INSERT INTO dat_cha_inf (
@@ -265,7 +265,7 @@
     </insert>
 
 
-<!-- 添加故障 信息 -->
+<!-- 添加故障 信息 对应桩id -->
     <insert id="insertFau">
 
 
