@@ -54,14 +54,14 @@ public class StartServer implements ApplicationRunner {
 
         InetSocketAddress address = new InetSocketAddress(soketIp, soketPort);
 
-        System.out.println("address-------------"+address);
+        //System.out.println("address-------------"+address);
 
         int i =  nettyServer.start(address);
 
         if (i != 0){
-            System.out.println("============================pile start server faile====================");
+           // System.out.println("============================pile start server faile====================");
         }
-        System.out.println("============================pile start server success====================");
+        //System.out.println("============================pile start server success====================");
 
     }
 }

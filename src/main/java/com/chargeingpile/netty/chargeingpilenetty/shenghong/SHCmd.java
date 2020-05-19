@@ -1,14 +1,36 @@
 package com.chargeingpile.netty.chargeingpilenetty.shenghong;
 
 
+import com.chargeingpile.netty.chargeingpilenetty.mapper.ChargingMapper;
 import com.chargeingpile.netty.chargeingpilenetty.netty.server.NettyChargeHandler;
+import com.chargeingpile.netty.chargeingpilenetty.netty.server.NettyServer;
+import com.chargeingpile.netty.chargeingpilenetty.service.serviceImpl.ChargingServiceImpl;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.handle.HandleName;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.message.StartCharger;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.message.StopCharger;
+import com.chargeingpile.netty.chargeingpilenetty.util.ApplicationContextUtils;
+import com.chargeingpile.netty.chargeingpilenetty.util.EhcacheUtil;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+
+import java.net.InetSocketAddress;
+
 public class SHCmd {
+
+
+
+	private ApplicationContext applicationContext= ApplicationContextUtils.getApplicationContext();
+
+	ChargingServiceImpl chargingService = applicationContext.getBean(ChargingServiceImpl.class);
+
+
+
 	
 	/**
 	 * 发送消息序列号
@@ -34,16 +56,31 @@ public class SHCmd {
 			flag = 1;
 		}
 
-		NettyChargeHandler handler = (NettyChargeHandler) ctx.channel().pipeline().get(HandleName.HANDLE_CHARGE) ;
+		//NettyChargeHandler handler = (NettyChargeHandler) ctx.channel().pipeline().get(HandleName.HANDLE_CHARGE) ;
+		System.out.println("sta====ctx========="+ctx);
+		System.out.println("sta====ctx.channel()========="+ctx.channel());
+		System.out.println("sta====ctx.channel().pipeline()========="+ctx.channel().pipeline());
+		System.out.println("sta====ctx.channel().pipeline().get()========="+ctx.channel().pipeline().get("charge"));
+
+		NettyChargeHandler handler = null;
+		handler = (NettyChargeHandler) ctx.channel().pipeline().get("charge") ;
+
+		EhcacheUtil ehcache = EhcacheUtil.getInstance();
+		InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
+		String clientIp = insocket.getAddress().getHostAddress();
+		ChannelId channelId = ctx.channel().id(); // 获取连接通道唯一标识通道号
+
+		if (handler != null){
+			ehcache.put(clientIp+channelId,ctx.channel().pipeline().get("charge"));
+		}else{
+			 handler = (NettyChargeHandler)ehcache.get(clientIp+channelId);
+		}
+		System.out.println("sta====handler========="+handler);
 		handler.setFlag(flag);
-		
-		ChannelFuture future =
-				ctx.writeAndFlush(data.getMsgByte(index));
 
+		ChannelFuture future = ctx.writeAndFlush(data.getMsgByte(index));
 		index += 2;
-
 		future.addListener(new ChannelFutureListener() {
-
 			@Override
 			public void operationComplete(ChannelFuture future) throws Exception {
 				if (future.isSuccess()) {
@@ -56,6 +93,8 @@ public class SHCmd {
 		
 		return true;
 	}
+
+
 	/**
 	 * 停止充电/取消预约
 	 * @param ctx
@@ -74,12 +113,33 @@ public class SHCmd {
 			flag = 1;
 		}
 
-		NettyChargeHandler handler = (NettyChargeHandler)ctx.channel().pipeline().get(HandleName.HANDLE_CHARGE) ;
-		handler.setFlag(flag);
+		//NettyChargeHandler handler = (NettyChargeHandler)ctx.channel().pipeline().get(HandleName.HANDLE_CHARGE) ;
+		System.out.println("stop===ctx========="+ctx);
+		System.out.println("stop===ctx.channel()========="+ctx.channel());
+		System.out.println("stop===ctx.channel().pipeline()========="+ctx.channel().pipeline());
+		System.out.println("stop===ctx.channel().pipeline().get()========="+ctx.channel().pipeline().get("charge"));
+		NettyChargeHandler handler =null;
 
-		//ChannelFuture future =
+		handler = (NettyChargeHandler) ctx.channel().pipeline().get("charge");
+
+		System.out.println("stop===handler===="+handler);
+
+		EhcacheUtil ehcache = EhcacheUtil.getInstance();
+		InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
+		String clientIp = insocket.getAddress().getHostAddress();
+		ChannelId channelId = ctx.channel().id(); // 获取连接通道唯一标识通道号
+
+		if (handler != null){
+			ehcache.put(clientIp+channelId,ctx.channel().pipeline().get("charge"));
+		}else{
+			handler = (NettyChargeHandler)ehcache.get(clientIp+channelId);
+		}
+
+
+		ChannelFuture future =
 				ctx.writeAndFlush(data.getMsgByte(2));
 
+		handler.setFlag(flag);
 		/*future.addListener(new ChannelFutureListener() {
 			
 			@Override

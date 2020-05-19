@@ -1,5 +1,6 @@
 package com.chargeingpile.netty.chargeingpilenetty.shenghong;
 
+import org.junit.Test;
 import org.springframework.stereotype.Component;
 
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.ASCIIUtil;
@@ -55,10 +56,11 @@ public class SHUtils {
 		System.arraycopy(lenb, 0, res, 2, 2);
 		res[4] = (byte) 0x10;
 
-        System.out.println("sequence========="+sequence);
-		res[5] = (byte) Integer.parseInt(Integer.toHexString(sequence));
+        System.out.println("sequence==10======="+sequence);
 
-		//res[5] = 1;
+		//res[5] = (byte) Integer.parseInt(Integer.toHexString(sequence));
+		System.out.println("sequence==16======="+Integer.parseInt(Integer.toString(sequence),16));
+		res[5] = (byte) Integer.parseInt(Integer.toString(sequence),16);;//序列号 10进制 转 16进制
 		// cmd
 		System.arraycopy(cmd, 0, res, 6, 2);
 
@@ -82,6 +84,27 @@ public class SHUtils {
 		
 
 		return res;
+	}
+
+
+	@Test
+	public void te(){
+		System.out.println(Integer.toHexString(2));
+		byte[] res = new byte[3];
+
+
+		res[0] = (byte) 0xAA;//
+		res[1] = (byte) 0xF5;
+
+		System.out.println(Integer.toString(11));
+
+		res[2] = (byte) Integer.parseInt(Integer.toString(11),16);
+
+		Integer b=Integer.parseInt("49",16);
+
+		System.out.println(res);
+
+		System.out.println(b);
 	}
 
 	/**

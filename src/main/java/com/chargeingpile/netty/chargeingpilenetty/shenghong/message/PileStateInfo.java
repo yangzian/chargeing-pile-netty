@@ -2,7 +2,9 @@ package com.chargeingpile.netty.chargeingpilenetty.shenghong.message;
 
 import java.util.Arrays;
 
+import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.BytesUtil;
 import com.sun.org.apache.bcel.internal.generic.NEW;
+import org.junit.Test;
 
 /**
  * 充电桩状态信息上报数据 ， 字段为 byte[] 类型
@@ -125,6 +127,8 @@ public class PileStateInfo {
 	 * 充电时长(秒)
 	 */
 	private byte[] chargeDuration = new byte[4];
+	private String chargeDurationStr;
+	private int chargeDurationInt;
 
 	/**
 	 * 本次充电累计充电电量（0.01kwh）
@@ -177,6 +181,7 @@ public class PileStateInfo {
 	 * 预约/开始充电 开始时间
 	 */
 	private byte[] startTime = new byte[8];
+	private String staTime;
 	/**
 	 * 充电前卡余额
 	 */
@@ -262,14 +267,27 @@ public class PileStateInfo {
 		info.setOrderFlag(msg[111]);
 		// 充电/预约卡号
 		data = info.getCardID();
-		System.arraycopy(msg, 112, data, 0, data.length);
+		if (msg.length > 112){
+
+			System.arraycopy(msg, 112, data, 0, data.length);
+		}
 
 		data = info.getStartTime();
-		System.arraycopy(msg, 145, data, 0, data.length);
+		System.out.println("=======msg==============="+ BytesUtil.bytesToHexString(msg));
+		System.out.println("========msgLength========"+msg.length);
+		System.out.println("=======data==============="+BytesUtil.bytesToHexString(data));
+		if (msg.length > 145){
+
+			System.arraycopy(msg, 145, data, 0, data.length);
+		}
 
 		data = info.getCardBalance();
-		System.arraycopy(msg, 153, data, 0, data.length);
-		
+		if (msg.length > 153){
+
+			System.arraycopy(msg, 153, data, 0, data.length);
+		}
+
+
 		if(msg.length > 161){
 			
 			data = info.getCharge_power();
@@ -572,5 +590,61 @@ public class PileStateInfo {
 
 	public void setCarIdStr(String carIdStr) {
 		this.carIdStr = carIdStr;
+	}
+
+
+	public String getChargeDurationStr() {
+		return chargeDurationStr;
+	}
+
+	public void setChargeDurationStr(String chargeDurationStr) {
+		this.chargeDurationStr = chargeDurationStr;
+	}
+
+	public String getStaTime() {
+		return staTime;
+	}
+
+	public void setStaTime(String staTime) {
+		this.staTime = staTime;
+	}
+
+
+	public int getChargeDurationInt() {
+		return chargeDurationInt;
+	}
+
+	public void setChargeDurationInt(int chargeDurationInt) {
+		this.chargeDurationInt = chargeDurationInt;
+	}
+
+	@Test
+	public void demo(){
+		//String msg = "aaf5b500109a6800000000000000000000000000000000000000000000000073000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+		String msg = "aaf5b500109a";
+
+		byte[] b = BytesUtil.hexStringToBytes(msg);
+
+		byte[] data = new byte[1];
+
+		System.out.println("b====="+b.length);
+
+		System.arraycopy(b, 2, data, 0, data.length);
+
+
+		System.out.println("data====="+BytesUtil.bytesToHexString(data));
+
+		//char[] a= {'a','b','c','d','e','f'};
+		//char[]	b=new char[3];
+
+
+			//src表示源数组，srcPos表示源数组要复制的起始位置，desc表示目标数组，length表示要复制的长度。
+		//System.arraycopy(a, 3, b, 0, b.length);
+		//System.out.println(b);
+
+
+
+
+
 	}
 }

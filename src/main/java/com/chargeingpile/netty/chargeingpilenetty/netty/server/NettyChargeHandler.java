@@ -85,22 +85,10 @@ public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
                         client.setPileState(ClientConnection.STATE_ORDER); // 5
                     } else {
 
-                        System.out.println("开启充电 -- 成功");
+                        System.out.println("chargeHandler=====开启充电 -- 成功");
 
                         client.setPileState(ClientConnection.STATE_CHARGE);// 2
 
-                        //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
-                        // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警',
-                        //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
-                        // 修改设备的状态
-                        //chargingMapper.updChaPilSta(null,null, pile,null,"1","0");
-
-
-                        //client.setPileState(ClientConnection.STATE_READY);// 1
-
-//						String id = client.getUserID();
-//						com.chargepile.service.collection.suowei.sql.Insert.insertChargeStart(id, pile,
-//								new Date(System.currentTimeMillis()));
                     }
                 }
 
@@ -120,14 +108,6 @@ public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
                     //client.setPileState(ClientConnection.STATE_CHARGE_OVER); //3
 
                     System.out.println("停止充电--成功");
-
-                    //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
-
-                    // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警',
-                    //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
-                    // 修改设备的状态
-                   // chargingMapper.updChaPilSta(null,null, pile,null,"2","0");
-
 
                 }
             } else {

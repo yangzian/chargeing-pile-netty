@@ -77,9 +77,9 @@ public class SHServer{
 
                 public void operationComplete(ChannelFuture future) throws Exception {
                     if (future.isSuccess()) {
-                        System.out.println(" server start on --> " + future.channel().localAddress());
+                       // System.out.println(" server start on --> " + future.channel().localAddress());
                     } else {
-                        System.out.println(" server start failed --> ");
+                      //  System.out.println(" server start failed --> ");
                         bossGroup.shutdownGracefully();
                         workGroup.shutdownGracefully();
                     }

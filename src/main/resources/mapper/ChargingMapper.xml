@@ -16,7 +16,7 @@
     <select id="selChaIp" resultType="com.chargeingpile.netty.chargeingpilenetty.pojo.BasChaPilPojo">
 
        select
-		bcp.cha_ip,bcp.cha_por,bcp.cha_num,bcp.man_id,bcp.chp_com_equ,bcp.cha_pil_sta,
+		bcp.cha_ip,bcp.cha_por,bcp.cha_num,bcp.man_id,bcp.chp_com_equ,bcp.cha_pil_sta,bcp.id,
 		(select
 		bm.man_nam from bas_man bm where bm.id = bcp.man_id) man_nam
 		from
@@ -39,7 +39,7 @@
 
     <!-- 充电桩实时 数据 新增  -->
     <insert id="insertDatChaPilSta">
-        INSERT INTO dat_cha_pil_sta_copy (
+        INSERT INTO dat_cha_pil_sta (
             cha_pil_id,
             cha_gun_num,
             cha_gun,
@@ -99,7 +99,8 @@
                 #{B_current},
                 #{C_current},
                 #{surplus_charge_time},
-                #{chargeDuration},
+                <!--#{chargeDuration},-->
+                #{chargeDurationInt},
                 #{accumulativeEle},
                 #{charge_read_before},
                 #{charge_read},
@@ -109,7 +110,7 @@
                 #{orderFlag},
                 #{carIdStr},
                 0,
-                #{startTime},
+                #{staTime},
                 #{cardBalance},
                 #{charge_power},
                 NOW()
@@ -123,7 +124,7 @@
     <insert id="insertDatChaRes">
 
 
-        INSERT INTO dat_cha_rec_copy (
+        INSERT INTO dat_cha_rec (
             use_id,
             chs_id,
             chp_id,
@@ -175,7 +176,7 @@
     <!-- 充电站实时数据 （开始，结束。） -->
     <insert id="insertDatChaInf">
 
-        INSERT INTO dat_cha_inf_copy (
+        INSERT INTO dat_cha_inf (
             cha_pil_id,
              cha_gun_typ,
              cha_gun,

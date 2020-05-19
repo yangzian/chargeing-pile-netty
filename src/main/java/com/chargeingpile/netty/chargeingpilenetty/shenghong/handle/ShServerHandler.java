@@ -54,7 +54,7 @@ public class ShServerHandler extends SimpleChannelInboundHandler<byte[]> {
             if (msg[50] == 0) {
 
             } else {
-                System.out.println("参数查询/设置--失败");
+               // System.out.println("参数查询/设置--失败");
             }
         } else if (cmd.equalsIgnoreCase(ShengHong.STATE_MAST)) {
 
@@ -71,8 +71,8 @@ public class ShServerHandler extends SimpleChannelInboundHandler<byte[]> {
 
                         //log.info( "pipleCode = "+ pipleCode +" 上报充电记录");
                         //log.info( info.toString());
-                        System.out.println("pipleCode = "+ pipleCode +" 上报充电记录");
-                        System.out.println(info.toString());
+                      //  System.out.println("pipleCode = "+ pipleCode +" 上报充电记录");
+                       // System.out.println(info.toString());
 
                         //chargeDao.insertChargeRecord(info, pipleCode);
 
@@ -144,13 +144,13 @@ public class ShServerHandler extends SimpleChannelInboundHandler<byte[]> {
     private void handleChargeState(final ChannelHandlerContext ctx, final byte[] msg,
                 final ClientConnection client) {
        // log.info("盛宏充电桩 状态信息上报 --> ");
-        System.out.println("盛宏充电桩 状态信息上报 --> ");
+        //System.out.println("盛宏充电桩 状态信息上报 --> ");
         ctx.executor().execute(new Runnable() {
             public void run() {
                 try {
                     PileStateInfo info = PileStateInfo.getStateInfo(msg);
                  //   log.info("handleChargeState --> " + info.toString());
-                    System.out.println("handleChargeState --> " + info.toString());
+                  //  System.out.println("handleChargeState --> " + info.toString());
 
                     //chargeDao.insertChargeRecord(info, pipleCode);
 

@@ -2,6 +2,7 @@ package com.chargeingpile.netty.chargeingpilenetty.controller;
 
 import com.chargeingpile.netty.chargeingpilenetty.config.ServerResponse;
 import com.chargeingpile.netty.chargeingpilenetty.mapper.ChargingMapper;
+import com.chargeingpile.netty.chargeingpilenetty.netty.server.NettyServerHandler;
 import com.chargeingpile.netty.chargeingpilenetty.pojo.BasChaPilPojo;
 import com.chargeingpile.netty.chargeingpilenetty.service.ChargingService;
 import com.chargeingpile.netty.chargeingpilenetty.service.serviceImpl.ChargingServiceImpl;
@@ -159,7 +160,7 @@ public class ChargingController {
             String sta_tim = staTim;
             // 结束时间
             String end_tim = endTime;
-            // 时长=
+            //时长=
             String tim_len = "";
 
             String dev_add_num = ""; //硕维 在集中器 下的编号
@@ -221,21 +222,8 @@ public class ChargingController {
                     // 充电
                     desc = "开启充电成功";
                     retMap.put("state", 1);
-
-                    //0‐空闲中 1‐正准备开始充电 2‐充电进行中 3‐充电结束 4‐启动失败 5‐预约状 态 6‐系统故障(不能给汽车充 电)
-                    // cha_pil_sta` 充电桩状态（1为充电中，2为空闲，3为故障，4为预约，5为离线,6为告警',
-                    //fau_sta '故障状态(0为无故障，1为机器故障，2为网络故障，3为系统故障)
-                    // 修改设备的状态
-                   // chargingMapper.updChaPilSta(null,null, cha_num,null,"1","0");
-
-
                     return ServerResponse.createBySuccess("开启充电成功。",retMap);
-
-
-
-
                     //new Thread(new ChargeRun(cha_num)).start();
-
 
                 } else {
 
@@ -243,7 +231,15 @@ public class ChargingController {
 
                         ClientConnection client = ClientManager.getClientConnection(chp_ip, cha_num);
 
+                        ChannelHandlerContext ctx = NettyServerHandler.getClientConnection(chp_ip);
+
+                        System.out.println("ctx==start==============="+ctx);
+
+
+
+
                         if (client == null || client.getCtx() == null) {
+                        //if (ctx == null) {
                             desc = "桩未连接";
                             retMap.put("desc","充电桩未连接。");
                             retMap.put("state", 2);
@@ -298,11 +294,8 @@ public class ChargingController {
 
                             charger.setCard(card);
 
-
-                            //System.out.println("充电的参数"+charger.getCharType()+"-----"+charger.getCharStra()+"-----"+charger.getCharStraPara());
-
-
-                            SHCmd.startCharge(client.getCtx(), charger);
+                            //SHCmd.startCharge(client.getCtx(), charger);
+                            SHCmd.startCharge(ctx, charger);
 
                             // 等待结果
                             long start = System.currentTimeMillis();
@@ -365,7 +358,7 @@ public class ChargingController {
         } catch (Exception e) {
 
             e.printStackTrace();
-            return ServerResponse.createByErrorMessage("服务器异常，请联系管理员。");
+            return ServerResponse.createByErrorMessage("服务器异常，请联系管理员。"+e);
         }
 
     }
@@ -441,8 +434,8 @@ public class ChargingController {
 
                 String pilSta = chaList.get(0).getChaPilSta();
 
-                if (StringUtil.equals("2",pilSta)){
-                    return ServerResponse.createByErrorMessage("编号："+cha_num+"的充电桩已经是空闲状态，请勿重复关闭。");
+                if (StringUtil.equals("1",pilSta) || StringUtil.equals("2",pilSta)){
+                    //return ServerResponse.createByErrorMessage("编号："+cha_num+"的充电桩正在充电或取消充电，请无须重复关闭。");
                 }
 
 
@@ -466,7 +459,7 @@ public class ChargingController {
 
                     if (object != null){
 
-                        System.out.println("停止充电成功-----"+object.toString());
+                       // System.out.println("停止充电成功-----"+object.toString());
                     }
 
                     retMap.put("state", 1);
@@ -480,7 +473,14 @@ public class ChargingController {
 
                 } else {
                     if (!CommonUtil.isEmpty(chp_ip)) {
+
+
+
                         ClientConnection client = ClientManager.getClientConnection(chp_ip, cha_num);
+
+                        ChannelHandlerContext ctx = NettyServerHandler.getClientConnection(chp_ip);
+                        System.out.println("stop======="+ctx);
+
 
                         if (client == null || client.getCtx() == null) {
                             desc = "桩未连接";
@@ -505,7 +505,8 @@ public class ChargingController {
 
                             charger.setAddr(startAdd);
 
-                            SHCmd.stopCharge(client.getCtx(), charger);
+                           // SHCmd.stopCharge(client.getCtx(), charger);
+                            SHCmd.stopCharge(ctx, charger);
 
                             long start = System.currentTimeMillis();
 
@@ -564,7 +565,7 @@ public class ChargingController {
 
                                         ehcache.put(cha_num+"retMap",retMap);
 
-                                        System.out.println("停止充电成功==========="+retMap);
+                                       // System.out.println("停止充电成功==========="+retMap);
 
                                         break;
 

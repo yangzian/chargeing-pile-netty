@@ -56,7 +56,7 @@ public class Http {
 		// 预约状态返回，成功返回1，不成功返回0或其它值
 		chaJson = senIns(inpUrl.toString());
 		
-		System.out.println("staCha -> " + chaJson.toString()) ;
+		//System.out.println("staCha -> " + chaJson.toString()) ;
 
 		return chaJson;
 	}

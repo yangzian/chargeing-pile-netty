@@ -38,7 +38,7 @@ public class MyDecoder extends MessageToMessageDecoder<byte[]> {
                 unpackSH(msg, out);
             }else {
                 log.info( " unkown proctrol 未知协议类型" );
-//                out.add(msg);
+                //out.add(msg);
             }
 
 

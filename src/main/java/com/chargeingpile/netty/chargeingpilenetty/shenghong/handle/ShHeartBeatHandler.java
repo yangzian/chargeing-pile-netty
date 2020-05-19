@@ -42,7 +42,7 @@ public class ShHeartBeatHandler extends ChannelInboundHandlerAdapter {
             }
 
 
-            System.out.println(ctx.channel().remoteAddress() + " --> 超时类型：" + type);
+            //System.out.println(ctx.channel().remoteAddress() + " --> 超时类型：" + type);
 
 
             if (CommonUtil.isEmpty(pileCode)) {
@@ -51,7 +51,7 @@ public class ShHeartBeatHandler extends ChannelInboundHandlerAdapter {
             }
 
             //log.info("pipleCode = " + pileCode);
-            System.out.println("pipleCode = " + pileCode);
+            //System.out.println("pipleCode = " + pileCode);
           //  alarmDao.idle(ctx, pileCode);
 
         } else {
@@ -72,7 +72,7 @@ public class ShHeartBeatHandler extends ChannelInboundHandlerAdapter {
         pileCode = SHUtils.getPileNum(msg1);
        // log.info( "pipleCode = "+ pileCode +", cmd = "+ BytesUtil.toInt2(msg1, 6) );
 
-        System.out.println("pipleCode = "+ pileCode +", cmd = "+ BytesUtil.toInt2(msg1, 6) );
+        //System.out.println("pipleCode = "+ pileCode +", cmd = "+ BytesUtil.toInt2(msg1, 6) );
 
 
         if (cmd.equalsIgnoreCase(ShengHong.HB_MAST)) { //充电桩上传心跳包 cmd=102
@@ -113,7 +113,7 @@ public class ShHeartBeatHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
       //  log.error("exceptionCaught --> " + cause.toString());
 
-        System.out.println("exceptionCaught --> " + cause.toString());
+        //System.out.println("exceptionCaught --> " + cause.toString());
         ctx.close();
     }
 

@@ -30,8 +30,7 @@ public class ClientManager {
 //            logger.error("ClientConenction not found in allClientMap, ip = "
 //                + ip + ", pileCode = " + pileCode);
 
-            System.out.println("ClientConenction not found in allClientMap, ip = "
-                    + ip + ", pileCode = " + pileCode);
+            //System.out.println("ClientConenction not found in allClientMap, ip = "+ ip + ", pileCode = " + pileCode);
 
         }
         return null;
@@ -69,7 +68,7 @@ public class ClientManager {
             conn = new ClientConnection(id, ctx);
             conn.setPile_code(pileCode);
             if (clientMap.put(id, conn) != null) {
-                System.out.println(" addClientConnection true --> " + clientMap.size());
+              //  System.out.println(" addClientConnection true --> " + clientMap.size());
             }
 
         }
@@ -82,15 +81,15 @@ public class ClientManager {
         String id = ip + "_" + pileCode;
 
         if (clientMap.remove(id) != null) {
-            System.out.println(" removeClientConnection true --> " + clientMap.size());
+          //  System.out.println(" removeClientConnection true --> " + clientMap.size());
         } else {
             //logger.error(id + " is not exist in allClientMap");
 
-            System.out.println(id + " is not exist in allClientMap");
+           // System.out.println(id + " is not exist in allClientMap");
         }
        // logger.info("Client disconnected," + id);
 
-        System.out.println("Client disconnected," + id);
+        //System.out.println("Client disconnected," + id);
     }
 
     public static void clear() {

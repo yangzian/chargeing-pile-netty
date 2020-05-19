@@ -185,6 +185,7 @@ public class ChargeRecordInfo {
         info.setChargeEnd(read_after);
         // 金额
         float money = BytesUtil.toInt4(msg, 116) * 0.01f;
+        System.out.println("money============="+money);
         info.setChargeMoney(money);
         float blanceMoney = BytesUtil.toInt4(msg, 124) * 0.01f;
         info.setCardBalance(blanceMoney);

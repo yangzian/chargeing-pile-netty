@@ -34,9 +34,12 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
         channel.pipeline().addLast(new IdleStateHandler(60,0,0));
 
         channel.pipeline().addLast(new MyDecoder());
-        channel.pipeline().addLast(new NettyServerHandler());
-        channel.pipeline().addLast("handler",new NettySystemHandler());
-        channel.pipeline().addLast(HandleName.HANDLE_CHARGE,new NettyChargeHandler());
+        channel.pipeline().addLast(new NettyServerHandler()); // 心跳 签到
+        channel.pipeline().addLast("handler",new NettySystemHandler()); //逻辑
+        //channel.pipeline().addLast(HandleName.HANDLE_CHARGE,new NettyChargeHandler());
+        channel.pipeline().addLast("charge",new NettyChargeHandler());
+
+
 
 
 

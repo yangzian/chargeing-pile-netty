@@ -22,7 +22,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
 
 
-        System.out.println("ClientHandler Active --------------------------");
+        //System.out.println("ClientHandler Active --------------------------");
 
 
     }
@@ -37,13 +37,13 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) {
 
         ctx.close();
-        System.out.println("服务端终止了服务 --------------");
+        //System.out.println("服务端终止了服务 --------------");
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
 
-        System.out.println("回写数据:----------------" + msg);
+        //System.out.println("回写数据:----------------" + msg);
     }
 
 
@@ -51,7 +51,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 
         //cause.printStackTrace();
-        System.out.println("fu wu duan fa sheng yi chang 【" + cause.getMessage() + "】");
+        //System.out.println("fu wu duan fa sheng yi chang 【" + cause.getMessage() + "】");
         ctx.close();
     }
 
@@ -66,7 +66,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         ChannelHandlerContext ctx = CLIENT_MAP.get(channelId);
 
         if (ctx == null) {
-            System.out.println("tong dao 【" + channelId + "】bu cun zai ");
+           // System.out.println("tong dao 【" + channelId + "】bu cun zai ");
             return;
         }
 

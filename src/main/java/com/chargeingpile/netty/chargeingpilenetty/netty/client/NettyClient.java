@@ -75,7 +75,7 @@ public class NettyClient implements Runnable{
                 }
             }
 
-            System.out.println(content + "-----------------------------" + num);
+            //System.out.println(content + "-----------------------------" + num);
             //future.channel().closeFuture().sync();
 
         } catch (InterruptedException e) {
