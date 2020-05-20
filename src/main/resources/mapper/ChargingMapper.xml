@@ -337,13 +337,47 @@
             WHERE 1 = 1
                 AND cha_num = #{cha_num}
 
+    </update>
+
+
+
+    <!-- 根据openid 和 桩id 查询 充电记录 信息 -->
+    <select id="selDatChaRec" resultType="java.util.HashMap">
+
+        SELECT id FROM dat_cha_rec where openid = #{openId} and chp_id = #{chpId} and cha_sta_tim = #{staTim} and cha_end_tim = #{endTim}
+
+    </select>
 
 
 
 
+    <!-- 查询用户 余额 -->
+    <select id="selUseWxAccBal" resultType="java.util.HashMap">
+        SELECT acc_bal,use_experience FROM use_wx where openid = #{openId}
 
+    </select>
+
+
+    <!-- 修改用户余额  -->
+    <update id="updUseWx">
+
+        UPDATE use_wx
+            SET
+            acc_bal = #{accBal},
+            use_experience = #{useExperience}
+            WHERE 1 = 1
+                AND openid = #{openId}
 
     </update>
+
+
+
+
+
+
+
+
+
 
 
 </mapper>

@@ -18,8 +18,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -139,12 +141,15 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
             //System.out.println("实时充电数据放入缓存,桩编号--------pipleCode---"+pipleCode);
 
             Map<String, Object> retMap = new HashMap<String, Object>();
+
+            DecimalFormat df = new DecimalFormat("#.00");
+
             retMap.put("elec", stateInfo.getElecQua());//本次充电电量 0.01kwh
             retMap.put("time", stateInfo.getCharTim());
             retMap.put("DC_v", stateInfo.getDireV());
             retMap.put("DC_i", stateInfo.getDireI());
-            retMap.put("av", stateInfo.getaV());
-            retMap.put("ai", stateInfo.getaI());
+            retMap.put("av", df.format(stateInfo.getaV()));
+            retMap.put("ai", df.format(stateInfo.getaI()));
             retMap.put("bv", stateInfo.getbV());
             retMap.put("bi", stateInfo.getbI());
             retMap.put("cv", stateInfo.getcV());
@@ -227,42 +232,81 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
 
                 System.out.println("electric========="+BytesUtil.toHexString(a));
 
-
-
                 //新增充电记录
                 chargingMapper.insertDatChaInf(client.getChargeRecordInfo());
 
 
+                //修改 用户 余额 （原来修改余额 放在运营平台上 如果是车自动充满电 会自动结束 运营平台无法计算费用）
+                String openId = (String) ehcache.get(client.getChargeRecordInfo().getPileCode()+"openId");// 缓存中 获取 用户penid
+
+
+
                 //新增记录
 
-                ChargeRecordInfo chInfo = client.getChargeRecordInfo();
+                // 桩id
+                String chaId = (String) ehcache.get(client.getChargeRecordInfo().getPileCode());
 
-                System.out.println("info====money===chaAmo"+chInfo.getChargeMoney());
+                // 根据openid 和 桩id 查询 充电记录 信息
+                List<Map<String,String>> list = chargingMapper.selDatChaRec(openId,chaId,
+                        client.getChargeRecordInfo().getStartTime(),
+                        client.getChargeRecordInfo().getEndTime());
 
-                Map map = new HashMap();
+                if (list.size() < 1){
 
-                map.put("useId",chInfo.getCardID());
-                map.put("chsId",9); //电站
-                //map.put("chpId",chInfo.getPileCode());// 设备编号
-                map.put("chpId",ehcache.get(chInfo.getPileCode()));// 设备id 通过编号从缓存中获取设备id
-                map.put("chaSta",2); // 充电状态 1为正在充电，2为充电已完成
-                map.put("chaStaTim",chInfo.getStartTime());
-                map.put("chaEndTim",chInfo.getEndTime());
-                map.put("chaAmo",chInfo.getChargeMoney());
-                map.put("chaEleQua",chInfo.getChargeEle());
-                map.put("weOrApp",2); //微信为2，app为1
-                map.put("staSoc",chInfo.getStartSOC());
-                map.put("endSoc",chInfo.getEndSOC());
-                //map.put("purEleAmo",); 购电金额
-                //map.put("arrTim",); 进站时间
-                //map.put("outTim",); 出站时间
-               // map.put("payee",);  收款人
-                //map.put("remark",); 备注
-                //map.put("dcrInf",); 充电记录信息
+                    ChargeRecordInfo chInfo = client.getChargeRecordInfo();
 
-                map.put("openid",ehcache.get(chInfo.getPileCode()+"openId")); //微信唯一标识
-                //map.put("chaOrdNum",);充电订单号
-                chargingMapper.insertDatChaRes(map);
+                    System.out.println("info====money===chaAmo"+chInfo.getChargeMoney());
+
+                    Map map = new HashMap();
+
+                    map.put("useId",chInfo.getCardID());
+                    map.put("chsId",9); //电站
+                    //map.put("chpId",chInfo.getPileCode());// 设备编号
+                    map.put("chpId",ehcache.get(chInfo.getPileCode()));// 设备id 通过编号从缓存中获取设备id
+                    map.put("chaSta",2); // 充电状态 1为正在充电，2为充电已完成
+                    map.put("chaStaTim",chInfo.getStartTime());
+                    map.put("chaEndTim",chInfo.getEndTime());
+                    map.put("chaAmo",chInfo.getChargeMoney());
+                    map.put("chaEleQua",chInfo.getChargeEle());
+                    map.put("weOrApp",2); //微信为2，app为1
+                    map.put("staSoc",chInfo.getStartSOC());
+                    map.put("endSoc",chInfo.getEndSOC());
+                    //map.put("purEleAmo",); 购电金额
+                    //map.put("arrTim",); 进站时间
+                    //map.put("outTim",); 出站时间
+                    // map.put("payee",);  收款人
+                    //map.put("remark",); 备注
+                    //map.put("dcrInf",); 充电记录信息
+
+                    map.put("openid",ehcache.get(chInfo.getPileCode()+"openId")); //微信唯一标识
+                    //map.put("chaOrdNum",);充电订单号
+                    chargingMapper.insertDatChaRes(map);
+
+                    // 查询用户余额
+                    Map<String,Object> accBalMap = chargingMapper.selUseWxAccBal(openId);
+
+                    double accc = (double)accBalMap.get("acc_bal");
+
+                    // 余额 = 余额-充电电费
+                    double money = accc - client.getChargeRecordInfo().getChargeMoney();
+
+                    //经验值 = 经验值 + 充电费用
+                    double expert = (double)accBalMap.get("use_experience");
+
+                    double useExperience = expert + client.getChargeRecordInfo().getChargeMoney();
+
+                    DecimalFormat df = new DecimalFormat("#.00");
+
+                    // 修改余额 经验值
+                    chargingMapper.updUseWx(df.format(money),useExperience,openId);
+
+
+
+
+
+
+                }
+
             }
 
         }else if (cmd.equalsIgnoreCase("6C00")) {// 108

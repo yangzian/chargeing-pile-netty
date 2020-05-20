@@ -98,4 +98,30 @@ public interface ChargingMapper {
                         @Param("chaPilSta")String chaPilSta
                         );
 
+
+    /**
+     *
+     * 根据openid 和 桩id 查询 充电记录 信息
+     *
+     */
+    List<Map<String,String>> selDatChaRec(@Param("openId")String openId,
+                                          @Param("chpId")String chpId,
+                                          @Param("staTim")String staTim,
+                                          @Param("endTim")String endTim
+                                          );
+
+    /**
+     * 查询用户 余额
+     */
+    Map<String,Object> selUseWxAccBal(@Param("openId")String openId);
+
+
+    /**
+     * 修改用户余额
+     * @return
+     */
+     int updUseWx(@Param("accBal")String accBal,
+                  @Param("useExperience")double useExperience,
+                  @Param("openId")String openId);
+
 }

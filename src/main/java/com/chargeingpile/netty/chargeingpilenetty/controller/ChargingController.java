@@ -594,11 +594,23 @@ public class ChargingController {
      */
     @ApiOperation(value = "充电桩实时数据获取")
     @PostMapping(value = "/chaReaTim")
-    public ServerResponse chaReaTim(@RequestParam(value = "chp_id") String chp_id){
+    public ServerResponse chaReaTim(@RequestParam(value = "chp_id") String chp_id,
+                                    @RequestParam(value = "openid") String openid){
 
         EhcacheUtil ehcache = EhcacheUtil.getInstance();
 
         Object object = ehcache.get(chp_id+"chaReaTim");
+
+
+
+        if (!StringUtil.isBlank(openid)){
+
+            ehcache.put(chp_id+"openId",openid);  // 桩编号+openId，openid
+
+        }
+
+
+
 
         return ServerResponse.createBySuccess("充电桩实时数据获取成功。",object);
 
