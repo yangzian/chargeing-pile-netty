@@ -5,6 +5,7 @@ import com.chargeingpile.netty.chargeingpilenetty.shenghong.SHUtils;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.manager.ClientConnection;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.manager.ClientManager;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.message.*;
+import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.ASCIIUtil;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.BytesUtil;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.CommonUtil;
 import com.chargeingpile.netty.chargeingpilenetty.util.ApplicationContextUtils;
@@ -79,6 +80,18 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
 
 
             System.out.println("info========"+info.toString());;
+
+
+            //System.out.println("zhuangid1==========="+Arrays.toString(info.getZhuangId()));
+            //System.out.println("zhuangid2==========="+BytesUtil.bytesToHexString(info.getZhuangId()));
+
+
+            String pile = ASCIIUtil.ASCII2Int(info.getZhuangId(), 0, info.getZhuangId().length-1);
+
+            //System.out.println("zhuangid3==========="+pile);
+
+            info.setZhuangIdStr(pile);
+
 
             chargingMapper.insertDatChaPilSta(info);   // 实时数据上传
 

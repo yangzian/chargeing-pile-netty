@@ -78,7 +78,7 @@
         )
         VALUES
             (
-                #{zhuangId},
+                #{zhuangIdStr},
                 #{gunCount},
                 #{gun},
                 #{gunType},

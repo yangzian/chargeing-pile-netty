@@ -18,6 +18,7 @@ public class PileStateInfo {
 	 * 桩 ID， ASSIC 编码
 	 */
 	private byte[] zhuangId = new byte[32];
+	private String zhuangIdStr;
 
 	/**
 	 * 充电枪数量
@@ -300,6 +301,14 @@ public class PileStateInfo {
 
 	public byte[] getZhuangId() {
 		return zhuangId;
+	}
+
+	public String getZhuangIdStr() {
+		return zhuangIdStr;
+	}
+
+	public void setZhuangIdStr(String zhuangIdStr) {
+		this.zhuangIdStr = zhuangIdStr;
 	}
 
 	public void setZhuangId(byte[] zhuangId) {
