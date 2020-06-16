@@ -5,6 +5,8 @@ import com.chargeingpile.netty.chargeingpilenetty.shenghong.decoder.MyDecoder;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.handle.HandleName;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.handle.ShHeartBeatHandler;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.handle.ShServerHandler;
+import com.chargeingpile.netty.chargeingpilenetty.util.EhcacheUtil;
+import io.netty.channel.ChannelId;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
@@ -16,13 +18,15 @@ import io.netty.util.CharsetUtil;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
+import java.net.InetSocketAddress;
+
 public class NettyServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
 
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
 
-
+        EhcacheUtil ehcache = EhcacheUtil.getInstance();
         //channel.pipeline().addLast("decoder",new StringDecoder(CharsetUtil.UTF_8));
         //channel.pipeline().addLast("encoder",new StringEncoder(CharsetUtil.UTF_8));
         channel.pipeline().addLast("decoder",new ByteArrayDecoder());
@@ -38,6 +42,14 @@ public class NettyServerChannelInitializer extends ChannelInitializer<SocketChan
         channel.pipeline().addLast("handler",new NettySystemHandler()); //逻辑
         //channel.pipeline().addLast(HandleName.HANDLE_CHARGE,new NettyChargeHandler());
         channel.pipeline().addLast("charge",new NettyChargeHandler());
+
+
+
+        InetSocketAddress insocket = (InetSocketAddress) channel.remoteAddress();
+        String clientIp = insocket.getAddress().getHostAddress();
+        ChannelId channelId = channel.id(); // 获取连接通道唯一标识通道号
+
+        ehcache.put(clientIp+channelId,channel.pipeline().get("charge"));
 
 
 

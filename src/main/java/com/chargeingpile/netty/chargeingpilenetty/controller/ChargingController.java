@@ -355,7 +355,10 @@ public class ChargingController {
         } catch (Exception e) {
 
             e.printStackTrace();
-            return ServerResponse.createByErrorMessage("服务器异常，请联系管理员。"+e);
+
+            System.out.println("sta========"+e);
+
+            return ServerResponse.createByErrorMessage("服务器异常，请联系管理员。");
         }
 
     }
@@ -581,6 +584,9 @@ public class ChargingController {
         } catch (Exception e) {
 
             e.printStackTrace();
+
+            System.out.println("stop========"+e);
+
             return ServerResponse.createByErrorMessage("服务器异常，请联系管理员。");
         }
 
