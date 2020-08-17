@@ -378,6 +378,75 @@
 
 
 
+    <!-- 获取 充电桩定价方案标识 -->
+    <select id="getOpeConInf" resultType="java.util.LinkedHashMap">
+
+
+        SELECT
+            bc.com_ip,
+            bc.com_por,
+            bc.spl_rat,
+            bcp.cha_num,
+            bcp.id chp_id,
+            bcs.id chs_id,
+            bcp.cha_sch_cod,
+            bcp.cha_pil_sta
+        FROM
+            bas_cha_sta bcs,
+            bas_com bc,
+            bas_cha_pil bcp
+        WHERE
+            bcs.com_id = bc.id
+            AND bcs.id = bcp.chs_id
+            <!-- AND bcp.id = #{chpId} -->
+            AND bcp.cha_num = #{chpId}
+
+
+
+    </select>
+
+
+
+
+    <!-- 获取分时段价格信息 -->
+    <select id="getChaSchCod" resultType="java.util.LinkedHashMap">
+
+
+        select * from bas_tim_int_pri btip
+        where btip.cha_sch_cod = #{chaSchCod}
+
+
+    </select>
+
+
+
+
+<!-- 查询用户余额信息 -->
+    <select id="getUserByOpenid" resultType="java.util.LinkedHashMap">
+
+        select
+        u.id,
+        u.use_nam,
+        u.use_mob,
+        u.use_car_num,
+        u.use_sex,
+        u.acc_bal,
+        u.cre_sco,
+        u.use_experience
+        from use_wx u where 1=1
+
+        <if test="openid != null and openid != ''">
+
+            and u.openid = #{openId}
+        </if>
+
+
+    </select>
+
+
+
+
+
 
 
 </mapper>

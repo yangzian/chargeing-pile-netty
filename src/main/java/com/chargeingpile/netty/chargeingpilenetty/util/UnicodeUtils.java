@@ -1,6 +1,6 @@
 package com.chargeingpile.netty.chargeingpilenetty.util;
 
-public class UnicodeUtil {
+public class UnicodeUtils {
 	
 	/**
 	 * 字符串转换unicode

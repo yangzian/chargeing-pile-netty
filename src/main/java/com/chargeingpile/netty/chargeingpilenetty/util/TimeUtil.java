@@ -8,7 +8,7 @@ import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.BytesUtil;
 
 import javafx.scene.chart.PieChart.Data;
 
-public class TimeUtils {
+public class TimeUtil {
 
 	public static int START_YEAR = 2000;
 	public static String TIME_START_SH = "20";
@@ -54,7 +54,7 @@ public class TimeUtils {
 	 * @return
 	 */
 	public static String parseSWTime(String hex) {
-		if ( CommonUtil.isEmpty(hex)) {
+		if ( CommonUtils.isEmpty(hex)) {
 			return null;
 		}
 		StringBuilder sBuilder = new StringBuilder();

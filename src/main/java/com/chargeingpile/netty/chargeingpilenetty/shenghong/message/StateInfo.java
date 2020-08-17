@@ -106,7 +106,9 @@ public class StateInfo {
 
 		int appoMark = Integer.parseInt(s[111], 16);// 33
 		String card = ASCIIUtil.ASCII2Int(m, 112, 144);// 34
-		int timOut = Integer.parseInt(s[144], 16);// 35
+
+		// int timOut = Integer.parseInt(s[144], 16);// 35
+		 int timOut = 0000;// 35
 		// TODO
 		String starTim = BytesUtil.bytesToHexString(info.getStartTime());// 36
 		starTim = starTim.substring(0, 2) + starTim.substring(2, 4) + "-" + starTim.substring(4, 6) + "-"

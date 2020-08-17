@@ -50,10 +50,11 @@ public class NettyServer {
 
                 return 0;
 
-
-
         } catch (Exception e) {
+
             e.printStackTrace();
+            System.out.println("nettyServer======================>>>>>>>>>>>>>>"+e);
+
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
 

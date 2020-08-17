@@ -3,7 +3,7 @@ package com.chargeingpile.netty.chargeingpilenetty.util;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.BytesUtil;
 import org.junit.Test;
 
-public class ASCIIUtil {
+public class ASCIIUtils {
 
     public static String convertHexToString(String hex) {
 

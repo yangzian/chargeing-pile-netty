@@ -85,7 +85,10 @@ public class ChargingServiceImpl implements ChargingService {
             int i =  nettyServer.start(address);
 
            if (i != 0){
-               return ServerResponse.createByErrorMessage("shibai。");
+
+               startService();
+
+               //return ServerResponse.createByErrorMessage("shibai。");
            }
  /*
         SHServer shServer = new SHServer(9999);

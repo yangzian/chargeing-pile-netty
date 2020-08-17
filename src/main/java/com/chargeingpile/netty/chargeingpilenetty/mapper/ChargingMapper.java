@@ -124,4 +124,26 @@ public interface ChargingMapper {
                   @Param("useExperience")double useExperience,
                   @Param("openId")String openId);
 
+
+    /**
+     * 获取 充电桩定价方案标识
+     * @param map
+     * @return
+     */
+    List<Map<String,Object>> getOpeConInf(Map<String,Object> map);
+
+    /**
+     * 获取分时段价格信息
+     * @param map
+     * @return
+     */
+    List<Map<String,Object>> getChaSchCod(Map<String,Object> map);
+
+    /**
+     * 查询用户余额信息
+     * @param map
+     * @return
+     */
+    List<Map<String,Object>> getUserByOpenid(Map<String,Object> map);
+
 }

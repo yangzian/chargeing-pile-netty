@@ -15,6 +15,7 @@
     <artifactId>chargeing-pile-netty</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>chargeing-pile-netty</name>
+   <!-- <packaging>war</packaging>-->
     <description>Demo project for Spring Boot</description>
 
 
@@ -200,7 +201,17 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
+
+
+                <!-- 移除嵌入式tomcat插件
+
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-tomcat</artifactId>
+                    </exclusion>
+-->
             </exclusions>
+
         </dependency>
 
 

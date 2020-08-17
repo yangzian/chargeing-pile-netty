@@ -1,7 +1,7 @@
 package com.chargeingpile.netty.chargeingpilenetty.shenghong.utils;
 
 import com.chargeingpile.netty.chargeingpilenetty.util.ApplicationContextUtils;
-import com.chargeingpile.netty.chargeingpilenetty.util.CommonUtil;
+import com.chargeingpile.netty.chargeingpilenetty.util.CommonUtils;
 import org.junit.Test;
 import org.springframework.cache.Cache;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class zz {
+public class zzdemo {
 
 
 

@@ -8,6 +8,7 @@ import com.chargeingpile.netty.chargeingpilenetty.shenghong.message.*;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.BytesUtil;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.CommonUtil;
 import com.chargeingpile.netty.chargeingpilenetty.util.ApplicationContextUtils;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.ReferenceCountUtil;
@@ -121,6 +122,34 @@ public class NettyChargeHandler extends SimpleChannelInboundHandler<byte[]> {
 
 
 
+
+
+//ctx.flush();
+    }
+
+
+
+    /**
+     * @param ctx
+     * @author xiongchuan on 2019/4/28 16:10
+     * @DESCRIPTION: 发生异常会触发此函数
+     * @return: void
+     */
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        //ctx.close();
+
+        //super.exceptionCaught(ctx, cause);
+       // Channel channel = ctx.channel();
+       // if(channel.isActive()){
+            //ctx.close();
+        ctx.flush();
+      //  }
+
+        System.out.println("charge======>>>>>"+cause+"====="+cause.getMessage());
+
+//
+         //System.out.println(ctx.channel().id() + " guanbi,此连接被关闭" + "此时连通数量: " + CHANNEL_MAP.size());
 
 
 

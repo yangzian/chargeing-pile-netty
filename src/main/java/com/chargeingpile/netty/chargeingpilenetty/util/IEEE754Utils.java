@@ -35,7 +35,7 @@ public class IEEE754Utils {
 	/**
 	 * 将float转为低字节在前，高字节在后的 4位byte数组
 	 * 
-	 * @param Value
+	 * @param //Value
 	 * @return byte[] 4位byte数组
 	 */
 	public static byte[] floatToBytes(float value)  
@@ -94,7 +94,7 @@ public class IEEE754Utils {
 	 /**
 	 * 浮点数转换为16进制的数据
 	 *
-	 * @param hex
+	 * @param //hex
 	 * @return
 	 * @throws Exception
 	 */
@@ -149,7 +149,7 @@ public class IEEE754Utils {
 	 /**
 	 * 浮点数转换为16进制的数据
 	 *
-	 * @param hex
+	 * @param //hex
 	 * @return
 	 * @throws Exception
 	 */
@@ -265,7 +265,7 @@ public class IEEE754Utils {
 	 * @throws Exception
 	 */
 	 public static Float binary2Decimal(String value) throws Exception {
-	 if (CommonUtil.isEmpty(value)) {
+	 if (CommonUtils.isEmpty(value)) {
 	 return null;
 	 }
 	 float count = 0;

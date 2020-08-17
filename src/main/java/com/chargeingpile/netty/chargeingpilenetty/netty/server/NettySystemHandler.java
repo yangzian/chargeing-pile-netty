@@ -1,6 +1,7 @@
 package com.chargeingpile.netty.chargeingpilenetty.netty.server;
 
 import com.chargeingpile.netty.chargeingpilenetty.mapper.ChargingMapper;
+import com.chargeingpile.netty.chargeingpilenetty.pojo.BasChaPilPojo;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.SHUtils;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.manager.ClientConnection;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.manager.ClientManager;
@@ -8,22 +9,25 @@ import com.chargeingpile.netty.chargeingpilenetty.shenghong.message.*;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.ASCIIUtil;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.BytesUtil;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.CommonUtil;
-import com.chargeingpile.netty.chargeingpilenetty.util.ApplicationContextUtils;
-import com.chargeingpile.netty.chargeingpilenetty.util.EhcacheUtil;
-import com.chargeingpile.netty.chargeingpilenetty.util.PileStaUtil;
-import com.chargeingpile.netty.chargeingpilenetty.util.StringUtil;
+import com.chargeingpile.netty.chargeingpilenetty.util.*;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.ReferenceCountUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHost;
+import org.apache.http.client.fluent.Form;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.atomic.DoubleAccumulator;
 
 
 //业务逻辑处理
@@ -99,7 +103,6 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
 
             int pileState = info.getWorkState();
 
-
             int sta = PileStaUtil.getPileSta(pileState); // 桩和 数据库中的状态不一致 转换
 
             System.out.println("状态信息上报2---------insert pile:----"+SHUtils.getPileNum(msg)+"----sta:--"+pileState+"===="+sta);
@@ -111,8 +114,6 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
             // 修改设备的状态
             //chargingMapper.updChaPilSta(null,null, SHUtils.getPileNum(msg),null,String.valueOf(sta),"0");
             chargingMapper.updChaPilStaNew(SHUtils.getPileNum(msg),String.valueOf(sta));
-
-
 
             String gun = BytesUtil.byteToHexString(info.getGun());
             String cardStr = BytesUtil.bytesToHexString(info.getCardID());
@@ -174,6 +175,155 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
 
             System.out.println("实时数据========"+retMap);
             ehcache.put(pipleCode+"chaReaTim",retMap);
+
+
+            // 缓存中 获取 用户openid
+            String ope = (String) ehcache.get(pipleCode+"openId");
+
+
+            System.out.println("桩编码======="+pipleCode+"openid"+ope);
+
+/*
+
+            //  充电桩定价方案标识
+            Map<String, Object> opeMap = new HashMap<String, Object>();
+            opeMap.put("chpId",pipleCode);//本次充电电量 0.01kwh
+            List<Map<String,Object>> ociLst = chargingMapper.getOpeConInf(opeMap);
+
+            System.out.println(ociLst+"==========ociLst=======size======="+ociLst.size()+"opeMap===="+opeMap);
+
+            if (ociLst.size() > 0){
+
+                // 状态为 1 充电中
+                if ("1".equals(ociLst.get(0).get("cha_pil_sta").toString())){
+
+                    System.out.println("转态"+ociLst.get(0).get("cha_pil_sta").toString());
+
+                    //本次充电电量 0.01kwh
+                    double ele = stateInfo.getElecQua();
+
+
+                    // 获取分时段 定价方案
+                    Map<String, Object> codMap = new HashMap<String, Object>();
+                    codMap.put("chaSchCod",ociLst.get(0).get("cha_sch_cod"));
+                    List<Map<String,Object>> schLst = chargingMapper.getChaSchCod(codMap);
+
+                    System.out.println("schLst============"+schLst+"======size="+schLst.size());
+
+                    if (schLst.size() > 0){
+
+                        System.out.println("schLst============"+schLst+"======size="+schLst.size());
+
+
+                        // 当前时间
+                        Calendar now = Calendar.getInstance();
+                        // 当前时间 转为 12:01:01 时分秒格式
+                        String nowTime = now.get(Calendar.HOUR_OF_DAY)+":"+now.get(Calendar.MINUTE)+":"+now.get(Calendar.SECOND);
+
+                        System.out.println("nowTime============"+nowTime+"======");
+
+                        for (Map<String,Object> schMap : schLst){
+
+                            // 定价方案 开始时间段
+                            String staTime = schMap.get("int_sta_tim").toString();
+                            // 定价方案 结束时间段
+                            String endTime = schMap.get("int_end_tim").toString();
+
+                            // 判断当前时间 是否 在区间内
+                            boolean b = DateUtil.isInTimeRange(nowTime,staTime,endTime);
+
+                            if (b){
+                                // 在 则 获取 该时段价格
+                                Double pri = Double.parseDouble(schMap.get("tim_int_pri").toString());
+
+                                // 缓存中 获取 用户openid
+                                String openId = (String) ehcache.get(client.getChargeRecordInfo().getPileCode()+"openId");
+
+                                System.out.println("openId========================"+openId);
+
+                                // 查询用户余额
+                                Map<String,Object> accBalMap = chargingMapper.selUseWxAccBal(openId);
+
+                                double accc = (double)accBalMap.get("acc_bal");
+
+                                // 用户剩余余额 = 已有余额 - 本次充电电费(充电电量 * 价格)
+                                double money = accc - 1.23 * pri;
+
+                                DecimalFormat dft = new DecimalFormat("#.00");
+
+                                System.out.println("money======="+money);
+
+                                //经验值 = 经验值 + 充电费用
+                                double expert = (double)accBalMap.get("use_experience");
+
+                                System.out.println("expert======="+expert);
+
+                                double useExperience = expert + client.getChargeRecordInfo().getChargeMoney();
+
+                                // 修改余额 经验值
+                                chargingMapper.updUseWx(dft.format(money),useExperience,openId);
+
+                                //余额 >1 正常充电 并修改用户金额 和 经验值
+                                if (money > 2){
+
+                                    System.out.println(new Date()+"余额够抵扣电费，正常充电。"+"=====桩id"+pipleCode+"用户openId====="+openId);
+
+                                }else {
+
+                                    // 余额 <1 结束充电
+*/
+/*
+
+                                    MultipartEntityBuilder builder = MultipartEntityBuilder.create()
+                                            .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                                            .setCharset(Charset.forName("utf-8"));
+                                    builder.addTextBody("cha_num", pipleCode);
+                                    builder.addTextBody("userId", "0");
+                                    builder.addTextBody("openId", openId);
+
+                                    System.out.println("余额不够 准备停止=======");
+
+                                    //String content = Request.Post("http://218.17.24.102:8090/service/stopCharge")
+                                    String content = Request.Post("http://localhost:8090/service/stopCharge")
+                                            .body(builder.build())
+                                            .execute().returnContent().asString();
+
+*//*
+
+
+
+                                    String content = Request.Post("http://218.17.24.102:8090/service/stopCharge")
+                                            .addHeader("X-Custom-header", "stuff")
+                                            .bodyForm(Form.form().add("cha_num", pipleCode)
+                                                    .add("userId", "0")
+                                                    .add("openId",openId).build())
+                                            .execute().returnContent().asString();
+
+                                    //String content = HttpPost.http("http://218.17.24.102:8090/service/stopCharge","cha_num="+pipleCode+"&userId=0&"+"openId"+openId);
+
+                                    System.out.println("调用结束接口返回结果content======"+content);
+
+                                    System.out.println(new Date()+"余额不够抵扣，结束充电"+"=====桩id"+pipleCode+"用户openId====="+openId);
+
+                                }
+
+                            }
+
+                        }
+                    }
+
+
+
+
+
+
+                }
+
+            }
+
+*/
+
+
 
             // 告警状态
             Map<String, Object> fauMap = new HashMap<String, Object>();
@@ -253,14 +403,28 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                 String openId = (String) ehcache.get(client.getChargeRecordInfo().getPileCode()+"openId");// 缓存中 获取 用户penid
 
 
+               String open =  openId == null ? "" : openId;
+
 
                 //新增记录
 
                 // 桩id
                 String chaId = (String) ehcache.get(client.getChargeRecordInfo().getPileCode());
 
+                String cha = null;
+
+                //桩编号查询 桩id
+                List<BasChaPilPojo> lst = chargingMapper.selChaIp(null,client.getChargeRecordInfo().getPileCode());
+
+                if (lst.size() > 0){
+                    cha =lst.get(0).getChaId();
+                }
+
+
+                System.out.println("桩id"+cha+"openid===="+open+"记录"+client.getChargeRecordInfo());
+
                 // 根据openid 和 桩id 查询 充电记录 信息
-                List<Map<String,String>> list = chargingMapper.selDatChaRec(openId,chaId,
+                List<Map<String,String>> list = chargingMapper.selDatChaRec(open,cha,
                         client.getChargeRecordInfo().getStartTime(),
                         client.getChargeRecordInfo().getEndTime());
 
@@ -275,7 +439,12 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                     map.put("useId",chInfo.getCardID());
                     map.put("chsId",9); //电站
                     //map.put("chpId",chInfo.getPileCode());// 设备编号
-                    map.put("chpId",ehcache.get(chInfo.getPileCode()));// 设备id 通过编号从缓存中获取设备id
+                    Object chpId = ehcache.get(chInfo.getPileCode());
+
+                    String chp = chpId == null ? "" : (String) chpId;
+
+                   // map.put("chpId",chp);// 设备id 通过编号从缓存中获取设备id
+                    map.put("chpId",cha);// 设备id 通过编号从缓存中获取设备id
                     map.put("chaSta",2); // 充电状态 1为正在充电，2为充电已完成
                     map.put("chaStaTim",chInfo.getStartTime());
                     map.put("chaEndTim",chInfo.getEndTime());
@@ -291,7 +460,11 @@ public class NettySystemHandler extends SimpleChannelInboundHandler<byte[]> {
                     //map.put("remark",); 备注
                     //map.put("dcrInf",); 充电记录信息
 
-                    map.put("openid",ehcache.get(chInfo.getPileCode()+"openId")); //微信唯一标识
+                    Object openid = ehcache.get(chInfo.getPileCode()+"openId");
+                    String ope = openid == null ? "" : (String) openid;
+
+                    //map.put("openid",ope); //微信唯一标识
+                    map.put("openid",open); //微信唯一标识
                     //map.put("chaOrdNum",);充电订单号
                     chargingMapper.insertDatChaRes(map);
 

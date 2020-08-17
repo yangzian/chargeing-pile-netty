@@ -1,13 +1,12 @@
 package com.chargeingpile.netty.chargeingpilenetty.util;
 
+import org.junit.Test;
+
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /***
  * 处理所有和日期相关的处理.
@@ -1407,4 +1406,113 @@ public class DateUtil extends Object {
         long ts = date.getTime();
         return ts;
     }
+
+
+
+
+
+    /**
+     * 判断时间是否在时间段内
+     * @param nowT
+     * @param beginT
+     * @param endT
+     * @return
+     */
+    public static boolean belongCalendar (String nowT, String beginT, String endT) throws Exception{
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+
+        Date nowTime = simpleDateFormat.parse(nowT);
+        Date beginTime = simpleDateFormat.parse(beginT);
+        Date endTime = simpleDateFormat.parse(endT);
+
+        //设置当前时间
+        Calendar date = Calendar.getInstance();
+        date.setTime(nowTime);
+        //设置开始时间
+        Calendar begin = Calendar.getInstance();
+        begin.setTime(beginTime);
+        //设置结束时间
+        Calendar end = Calendar.getInstance();
+        end.setTime(endTime);
+        //处于开始时间之后，和结束时间之前的判断
+        if (date.after(begin) && date.before(end)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * 时间区间 左开又闭 (12:00:00","17:00:00"]
+     * @param now
+     * @param staT
+     * @param endT
+     * @return
+     */
+    public static boolean isInTimeRange(String now,String staT,String endT){
+        int set = Integer.valueOf(now.replaceAll(":",""));
+        int begin = Integer.valueOf(staT.replaceAll(":",""));
+        int end = Integer.valueOf(endT.replaceAll(":",""));
+        if (begin > end){
+            return set <= end || set > begin;
+        } else {
+            return set > begin && set <= end;
+        }
+    }
+
+    @Test
+    public void demo() {
+
+        Calendar now = Calendar.getInstance();
+        List<Map<String,Object>> schLst = new ArrayList<>();
+
+        Map<String,Object> map1 = new HashMap<>();
+        map1.put("int_sta_tim","20:00:00");
+        map1.put("int_end_tim","6:00:00");
+        schLst.add(map1);
+
+         Map<String,Object> map2 = new HashMap<>();
+        map2.put("int_sta_tim","6:00:00");
+        map2.put("int_end_tim","12:00:00");
+        schLst.add(map2);
+
+         Map<String,Object> map3 = new HashMap<>();
+        map3.put("int_sta_tim","12:00:00");
+        map3.put("int_end_tim","20:00:00");
+        schLst.add(map3);
+
+
+
+
+        //String nowt = now.get(Calendar.HOUR_OF_DAY)+":"+now.get(Calendar.MINUTE)+":"+now.get(Calendar.SECOND);
+        String nowt = "5:00:00";
+
+        System.out.println(nowt);
+
+
+        for (Map<String,Object> schMap : schLst){
+
+            //开始时间段
+            String staTime = schMap.get("int_sta_tim").toString();
+            //结束时间段
+            String endTime = schMap.get("int_end_tim").toString();
+            // 判断当前时间 是否在 区间内
+            boolean b = DateUtil.isInTimeRange(nowt,staTime,endTime);
+
+            if (b){
+                //System.out.println("不在这个区间");
+                //continue;
+                System.out.println("在这个区间"+staTime+endTime);
+            }
+
+
+
+
+        }
+
+
+    }
+
 }

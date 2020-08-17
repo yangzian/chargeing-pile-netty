@@ -7,7 +7,7 @@ import java.util.Calendar;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.BytesUtil;
 import io.netty.channel.ChannelHandlerContext;
 
-public class CommonUtil {
+public class CommonUtils {
     
     
 	public static int START_YEAR = 2000;
@@ -29,7 +29,7 @@ public class CommonUtil {
 	 * @return
 	 */
 	public static String ipToHexString(String ip) {
-		if (CommonUtil.isEmpty(ip)) {
+		if (CommonUtils.isEmpty(ip)) {
 			return null;
 		}
 		StringBuilder sb = new StringBuilder();

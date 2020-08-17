@@ -14,8 +14,15 @@ import com.chargeingpile.netty.chargeingpilenetty.shenghong.message.ChargeRecord
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.message.StartCharger;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.message.StopCharger;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.BytesUtil;
-import com.chargeingpile.netty.chargeingpilenetty.util.ASCIIUtil;
-import com.chargeingpile.netty.chargeingpilenetty.util.CommonUtil;
+//import com.chargeingpile.netty.chargeingpilenetty.util.ASCIIUtil;
+//import com.chargeingpile.netty.chargeingpilenetty.util.CommonUtil;
+
+import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.ASCIIUtil;
+
+import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.CommonUtil;
+
+
+
 import com.chargeingpile.netty.chargeingpilenetty.util.EhcacheUtil;
 import com.chargeingpile.netty.chargeingpilenetty.util.StringUtil;
 import io.netty.channel.ChannelHandlerContext;
@@ -142,6 +149,22 @@ public class ChargingController {
                                      @RequestParam(value = "flag",defaultValue = "1") String flag){
         try {
 //
+
+
+
+            // 查询用户余额
+            Map<String,Object> accBalMap = chargingMapper.selUseWxAccBal(openId);
+
+            double accc = (double)accBalMap.get("acc_bal");
+
+            if (accc < 2){
+
+                return ServerResponse.createByErrorMessage(new Date()+"桩编码为"+cha_num+"余额不够抵扣电费，请充值后再进行充电。");
+
+            }
+
+
+
 
             EhcacheUtil ehcache = EhcacheUtil.getInstance();
             ehcache.put(cha_num+"openId",openId);
