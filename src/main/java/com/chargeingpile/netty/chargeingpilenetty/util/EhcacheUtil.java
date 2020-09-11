@@ -55,11 +55,13 @@ public class EhcacheUtil {
 		cache.put(element);
 	}
 
+
 	public Object get(String key) {
 		Cache cache = manager.getCache("userCache");
 		Element element = cache.get(key);
 		return element == null ? null : element.getObjectValue();
 	}
+
 
 	public Cache get() {
 		return manager.getCache("userCache");
@@ -69,4 +71,24 @@ public class EhcacheUtil {
 		Cache cache = manager.getCache("userCache");
 		cache.remove(key);
 	}
+
+
+
+
+
+
+	public void putList(String key, Object value) {
+		Cache cache = manager.getCache("listGo");
+		Element element = new Element(key, value);
+		cache.put(element);
+	}
+
+	public Object getList(String key) {
+		Cache cache = manager.getCache("listGo");
+		Element element = cache.get(key);
+		return element == null ? null : element.getObjectValue();
+	}
+
+
+
 }

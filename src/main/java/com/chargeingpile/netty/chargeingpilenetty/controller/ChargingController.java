@@ -164,7 +164,7 @@ public class ChargingController {
             }
 
 
-
+            System.out.println("开始充电-------桩-"+cha_num+"openId-----------"+ openId);
 
             EhcacheUtil ehcache = EhcacheUtil.getInstance();
             ehcache.put(cha_num+"openId",openId);

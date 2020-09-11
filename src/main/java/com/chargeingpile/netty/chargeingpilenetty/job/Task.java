@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -41,6 +42,9 @@ public class Task {
     @Scheduled(cron = "0/20 * * * * ?")
     //或直接指定时间间隔，例如：5秒
     private void configureTasks() {
+
+
+        Map<String,String> staMap = new HashMap<>();
 
         try {
 
@@ -84,7 +88,9 @@ public class Task {
                            Map map = JSONObject.parseObject(JSONObject.toJSONString(obj), Map.class);
 
                             //本次充电电量 0.01kwh
-                            int ele =(int) map.get("elec");
+                            String elec =map.get("elec").toString();
+
+                            int ele = Integer.parseInt(elec);
 
                             // 获取分时段 定价方案
                             Map<String, Object> codMap = new HashMap<String, Object>();
@@ -129,7 +135,7 @@ public class Task {
                                         double accc = (double)accBalMap.get("acc_bal");
 
                                         // 用户剩余余额 = 已有余额 - 本次充电电费(充电电量 * 价格)
-                                        double money = accc - 3.2 * pri;
+                                        double money = accc - ele * pri;
 
                                         DecimalFormat dft = new DecimalFormat("#.00");
 
@@ -142,30 +148,53 @@ public class Task {
 
                                         double useExperience = expert + ele * pri;
 
-
                                         //余额 >2 正常充电
-                                        if (money > 2){
+                                        if (money > 3){
 
                                             System.out.println(new Date()+"余额够抵扣电费，正常充电。"+"=====桩id"+basChaPilPojo.getChaNum()+"用户openId====="+openId);
 
                                         }else {
-                                            // 修改余额 经验值
-                                            chargingMapper.updUseWx(dft.format(money),useExperience,openId);
 
-                                            // 余额 <2 结束充电
 
-                                            String content = Request.Post("http://localhost:8090/service/stopCharge")
-                                                    .addHeader("X-Custom-header", "stuff")
-                                                    .bodyForm(Form.form().add("cha_num", basChaPilPojo.getChaNum())
-                                                            .add("userId", "0")
-                                                            .add("openId",openId).build())
-                                                    .execute().returnContent().asString();
+                                           Object sta =  ehcache.getList(basChaPilPojo.getChaNum()+"stop"+openId);
 
-                                            //String content = HttpPost.http("http://218.17.24.102:8090/service/stopCharge","cha_num="+pipleCode+"&userId=0&"+"openId"+openId);
+                                            if (sta == null){
+                                                // 余额 <2 结束充电
+                                                String content = Request.Post("http://localhost:8090/service/stopCharge")
+                                                        .addHeader("X-Custom-header", "stuff")
+                                                        .bodyForm(Form.form().add("cha_num", basChaPilPojo.getChaNum())
+                                                                .add("userId", "0")
+                                                                .add("openId",openId)
+                                                                .add("flag","1").build())
+                                                        .execute().returnContent().asString();
 
-                                            System.out.println("调用结束接口返回结果content======"+content);
+                                                System.out.println("调用结束接口返回结果content=1====="+content);
 
-                                            System.out.println(new Date()+"余额不够抵扣，结束充电"+"=====桩id"+basChaPilPojo.getChaNum()+"用户openId====="+openId);
+                                                // 修改余额 经验值
+                                                chargingMapper.updUseWx(dft.format(money),useExperience,openId);
+
+                                                // 停止充电 时 保存一个 值 来记录 是否已经停止过
+                                                ehcache.putList(basChaPilPojo.getChaNum()+"stop"+openId,"0000");
+
+                                                System.out.println(new Date()+"1.余额不够抵扣，结束充电"+"=====桩id"+basChaPilPojo.getChaNum()+"用户openId====="+openId);
+
+
+                                            }else{
+
+                                                // 余额 <2 结束充电
+                                                String content = Request.Post("http://localhost:8090/service/stopCharge")
+                                                        .addHeader("X-Custom-header", "stuff")
+                                                        .bodyForm(Form.form().add("cha_num", basChaPilPojo.getChaNum())
+                                                                .add("userId", "0")
+                                                                .add("openId",openId)
+                                                                .add("flag","1").build())
+                                                        .execute().returnContent().asString();
+
+                                                System.out.println("调用结束接口返回结果content=2====="+content);
+                                                System.out.println(new Date()+"2.余额不够抵扣，结束充电"+"=====桩id"+basChaPilPojo.getChaNum()+"用户openId====="+openId);
+
+                                            }
+
 
                                         }
 

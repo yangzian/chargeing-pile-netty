@@ -6,6 +6,7 @@ import com.chargeingpile.netty.chargeingpilenetty.mapper.ChargingMapper;
 import com.chargeingpile.netty.chargeingpilenetty.service.serviceImpl.ChargingServiceImpl;
 import com.chargeingpile.netty.chargeingpilenetty.shenghong.utils.ASCIIUtil;
 import com.chargeingpile.netty.chargeingpilenetty.util.DateUtil;
+import com.chargeingpile.netty.chargeingpilenetty.util.EhcacheUtil;
 import com.chargeingpile.netty.chargeingpilenetty.util.HttpPost;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -228,6 +229,22 @@ public class DemoController {
 
         System.out.println(nowTime);
 
+        EhcacheUtil ehcache = EhcacheUtil.getInstance();
+
+        ehcache.putList("123"+"stop"+"123","0000");
+
+        Thread.sleep(1000*4);
+
+        Object sta1 =  ehcache.getList("123"+"stop"+"123");
+
+
+        System.out.println("1====================="+sta1);
+
+        Thread.sleep(1000*2);
+
+        Object sta2 =  ehcache.getList("123"+"stop"+"123");
+
+        System.out.println("2====================="+sta2);
 
     }
 
